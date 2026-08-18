@@ -1,8 +1,12 @@
 import { Application } from "pixi.js";
 import { World } from "./world/World";
 import { Camera } from "./utils/Camera";
+import { inject } from "@vercel/analytics";
 
 (async () => {
+  // Initialize Vercel Analytics
+  inject();
+
   const app = new Application();
 
   await app.init({
