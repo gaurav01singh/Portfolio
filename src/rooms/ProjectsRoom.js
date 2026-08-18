@@ -89,8 +89,12 @@ export class ProjectsRoom extends Room {
     this.arcadeMachines = [];
     const totalProjects = this.projects.length;
 
-    const cols = rw > 1050 && totalProjects >= 4 ? 2 : totalProjects <= 2 ? totalProjects : 2;
-    const rows = Math.ceil(totalProjects / cols);
+    const cols =
+      rw > 1050 && totalProjects >= 4
+        ? 2
+        : totalProjects <= 2
+          ? totalProjects
+          : 2;
 
     const gridW = Math.min(rw * 0.9, 960);
     const colGap = 28;
@@ -454,7 +458,8 @@ export class ProjectsRoom extends Room {
     const t = performance.now() * 0.003;
 
     if (this.shaderFilter?.resources?.filterUniforms?.uniforms) {
-      this.shaderFilter.resources.filterUniforms.uniforms.uTime = performance.now() * 0.001;
+      this.shaderFilter.resources.filterUniforms.uniforms.uTime =
+        performance.now() * 0.001;
     }
 
     if (this.arcadeMachines && Array.isArray(this.arcadeMachines)) {

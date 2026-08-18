@@ -88,7 +88,6 @@ export class ExperienceRoom extends Room {
     const totalExp = this.experiences.length;
 
     const cols = totalExp <= 3 ? totalExp : rw > 1100 ? 3 : 2;
-    const rows = Math.ceil(totalExp / cols);
 
     const gridW = Math.min(rw * 0.92, 1080);
     const colGap = 28;
@@ -119,7 +118,13 @@ export class ExperienceRoom extends Room {
       const stationSpring = new Spring(1.0, 260, 14);
 
       const sShadow = new Graphics()
-        .roundRect(-stationW / 2 + 8, -stationH / 2 + 10, stationW, stationH, 16)
+        .roundRect(
+          -stationW / 2 + 8,
+          -stationH / 2 + 10,
+          stationW,
+          stationH,
+          16,
+        )
         .fill({ color: 0x000000, alpha: 0.7 });
 
       const sBg = new Graphics()
@@ -362,7 +367,8 @@ export class ExperienceRoom extends Room {
     const dt = (delta || 1) * 0.016;
 
     if (this.shaderFilter?.resources?.filterUniforms?.uniforms) {
-      this.shaderFilter.resources.filterUniforms.uniforms.uTime = performance.now() * 0.001;
+      this.shaderFilter.resources.filterUniforms.uniforms.uTime =
+        performance.now() * 0.001;
     }
 
     if (this.milestoneStations && Array.isArray(this.milestoneStations)) {
@@ -415,9 +421,7 @@ export class ExperienceRoom extends Room {
         const px = p1.x + (p2.x - p1.x) * segT;
         const py = p1.y + (p2.y - p1.y) * segT;
 
-        this.gridBusGraphics
-          .circle(px, py, 4.5)
-          .fill(0xff6b6b);
+        this.gridBusGraphics.circle(px, py, 4.5).fill(0xff6b6b);
       }
     }
   }

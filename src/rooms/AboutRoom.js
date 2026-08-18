@@ -458,7 +458,8 @@ export class AboutRoom extends Room {
     const dt = (delta || 1) * 0.016;
 
     if (this.shaderFilter?.resources?.filterUniforms?.uniforms) {
-      this.shaderFilter.resources.filterUniforms.uniforms.uTime = performance.now() * 0.001;
+      this.shaderFilter.resources.filterUniforms.uniforms.uTime =
+        performance.now() * 0.001;
     }
 
     if (

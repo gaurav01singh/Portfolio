@@ -153,15 +153,7 @@ export class EducationRoom extends Room {
 
     cgpaBox.addChild(cBg, cTxt);
 
-    degCont.addChild(
-      dShadow,
-      dBg,
-      dStripe,
-      dTitle,
-      dUni,
-      dPeriod,
-      cgpaBox,
-    );
+    degCont.addChild(dShadow, dBg, dStripe, dTitle, dUni, dPeriod, cgpaBox);
 
     degCont.on("pointerover", () => {
       degSpring.target = 1.08;
@@ -575,7 +567,8 @@ export class EducationRoom extends Room {
     const t = performance.now() * 0.002;
 
     if (this.shaderFilter?.resources?.filterUniforms?.uniforms) {
-      this.shaderFilter.resources.filterUniforms.uniforms.uTime = performance.now() * 0.001;
+      this.shaderFilter.resources.filterUniforms.uniforms.uTime =
+        performance.now() * 0.001;
     }
 
     if (

@@ -131,13 +131,7 @@ export class SkillsRoom extends Room {
     coreSub.anchor.set(0.5);
     coreSub.position.set(0, 12);
 
-    this.coreCont.addChild(
-      coreGlow,
-      coreBase,
-      coreInner,
-      coreTitle,
-      coreSub,
-    );
+    this.coreCont.addChild(coreGlow, coreBase, coreInner, coreTitle, coreSub);
 
     // Floating Badge above Reactor
     const coreBadge = new Container();
@@ -442,7 +436,8 @@ export class SkillsRoom extends Room {
     const t = performance.now() * 0.002;
 
     if (this.shaderFilter?.resources?.filterUniforms?.uniforms) {
-      this.shaderFilter.resources.filterUniforms.uniforms.uTime = performance.now() * 0.001;
+      this.shaderFilter.resources.filterUniforms.uniforms.uTime =
+        performance.now() * 0.001;
     }
 
     if (

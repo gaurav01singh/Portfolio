@@ -441,7 +441,8 @@ export class ContactRoom extends Room {
     if (this.destroyed || this.isClosing) return;
 
     if (this.shaderFilter?.resources?.filterUniforms?.uniforms) {
-      this.shaderFilter.resources.filterUniforms.uniforms.uTime = performance.now() * 0.001;
+      this.shaderFilter.resources.filterUniforms.uniforms.uTime =
+        performance.now() * 0.001;
     }
 
     // Animate coffee steam
