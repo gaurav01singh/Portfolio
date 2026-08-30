@@ -66,8 +66,14 @@ export class ContactRoom extends Room {
       .stroke({ width: 2.5, color: 0xff8fab });
 
     const neonCup = new Text({
-      text: "☕",
-      style: { fontSize: 26 },
+      text: "COFFEE",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 14,
+        fontWeight: "900",
+        fill: 0xff8fab,
+        letterSpacing: 1,
+      },
     });
     neonCup.anchor.set(0.5);
     neonCup.position.set(rw * 0.76 + 37, 82);
@@ -148,7 +154,7 @@ export class ContactRoom extends Room {
       x: rw * 0.2,
       y: floorY + 15,
       graphics: barGfx,
-      label: "☕ DIRECT CONTACT BAR",
+      label: "DIRECT CONTACT BAR",
       color: 0xff8fab,
       badgeY: -125,
       onInspect: () => {
@@ -179,7 +185,7 @@ export class ContactRoom extends Room {
       x: rw * 0.5,
       y: floorY + 20,
       graphics: tableGfx,
-      label: "💌 COLLABORATE & CHAT",
+      label: "COLLABORATE & CHAT",
       color: 0x38bdf8,
       badgeY: -75,
       onInspect: () => {
@@ -210,7 +216,7 @@ export class ContactRoom extends Room {
       x: rw * 0.8,
       y: floorY + 15,
       graphics: boardGfx,
-      label: "🐙 SOCIAL CHANNELS",
+      label: "SOCIAL CHANNELS",
       color: 0xf97316,
       badgeY: -155,
       onInspect: () => {
@@ -223,12 +229,12 @@ export class ContactRoom extends Room {
     const c = new Container();
 
     const title = new Text({
-      text: "Direct Contact Channels (Click to Copy)",
+      text: "Direct Contact Channels (Click to Open / Copy)",
       style: {
         fontFamily: "system-ui, sans-serif",
         fontSize: 13.5,
         fontWeight: "bold",
-        fill: 0xff8fab,
+        fill: 0xffffff,
       },
     });
     title.position.set(0, 0);
@@ -240,15 +246,15 @@ export class ContactRoom extends Room {
     emailBtn.cursor = "pointer";
 
     const eBg = new Graphics()
-      .roundRect(0, 0, 370, 44, 8)
-      .fill(0x161e2e)
-      .stroke({ width: 1.5, color: 0xff8fab });
+      .roundRect(0, 0, 380, 44, 8)
+      .fill({ color: 0x161e2e, alpha: 0.85 })
+      .stroke({ width: 1.5, color: 0x475569 });
 
     const eTxt = new Text({
-      text: "Email: gauravsingh02195@gmail.com  (Click to Copy)",
+      text: `Email: ${PORTFOLIO.contact.email} (Click to Copy / Open)`,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
+        fontSize: 11,
         fontWeight: "bold",
         fill: 0xffffff,
       },
@@ -258,9 +264,12 @@ export class ContactRoom extends Room {
     emailBtn.addChild(eBg, eTxt);
     emailBtn.on("pointertap", () => {
       this.copyToClipboard(
-        "gauravsingh02195@gmail.com",
+        PORTFOLIO.contact.email,
         "Email copied to clipboard!",
       );
+      if (typeof window !== "undefined") {
+        window.open(`mailto:${PORTFOLIO.contact.email}`, "_self");
+      }
     });
 
     // Phone Button
@@ -270,15 +279,15 @@ export class ContactRoom extends Room {
     phoneBtn.cursor = "pointer";
 
     const pBg = new Graphics()
-      .roundRect(0, 0, 370, 44, 8)
-      .fill(0x161e2e)
-      .stroke({ width: 1.5, color: 0x4dabf7 });
+      .roundRect(0, 0, 380, 44, 8)
+      .fill({ color: 0x161e2e, alpha: 0.85 })
+      .stroke({ width: 1.5, color: 0x475569 });
 
     const pTxt = new Text({
-      text: "Phone / WhatsApp: +91 6388474535  (Click to Copy)",
+      text: `Phone / WhatsApp: ${PORTFOLIO.contact.phone} (Click to Copy / Call)`,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
+        fontSize: 11,
         fontWeight: "bold",
         fill: 0xffffff,
       },
@@ -288,33 +297,92 @@ export class ContactRoom extends Room {
     phoneBtn.addChild(pBg, pTxt);
     phoneBtn.on("pointertap", () => {
       this.copyToClipboard(
-        "+91 6388474535",
+        PORTFOLIO.contact.phone,
         "Phone number copied to clipboard!",
       );
+      if (typeof window !== "undefined") {
+        window.open(`tel:${PORTFOLIO.contact.phone}`, "_self");
+      }
+    });
+
+    // GitHub Link Button
+    const ghBtn = new Container();
+    ghBtn.position.set(0, 128);
+    ghBtn.eventMode = "static";
+    ghBtn.cursor = "pointer";
+
+    const ghBg = new Graphics()
+      .roundRect(0, 0, 185, 40, 8)
+      .fill({ color: 0x161e2e, alpha: 0.85 })
+      .stroke({ width: 1.5, color: 0x475569 });
+
+    const ghTxt = new Text({
+      text: "GitHub Profile ↗",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 11,
+        fontWeight: "bold",
+        fill: 0xffffff,
+      },
+    });
+    ghTxt.position.set(10, 12);
+    ghBtn.addChild(ghBg, ghTxt);
+    ghBtn.on("pointertap", () => {
+      if (typeof window !== "undefined") {
+        window.open(PORTFOLIO.about.github, "_blank");
+      }
+    });
+
+    // LinkedIn Link Button
+    const liBtn = new Container();
+    liBtn.position.set(195, 128);
+    liBtn.eventMode = "static";
+    liBtn.cursor = "pointer";
+
+    const liBg = new Graphics()
+      .roundRect(0, 0, 185, 40, 8)
+      .fill({ color: 0x161e2e, alpha: 0.85 })
+      .stroke({ width: 1.5, color: 0x475569 });
+
+    const liTxt = new Text({
+      text: "LinkedIn Profile ↗",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 11,
+        fontWeight: "bold",
+        fill: 0xffffff,
+      },
+    });
+    liTxt.position.set(10, 12);
+    liBtn.addChild(liBg, liTxt);
+    liBtn.on("pointertap", () => {
+      if (typeof window !== "undefined") {
+        window.open(PORTFOLIO.about.linkedin, "_blank");
+      }
     });
 
     // Location
     const loc = new Text({
-      text: "Location: India (Open to Worldwide Remote & On-Site Roles)",
+      text: `Location: ${PORTFOLIO.contact.location} (Worldwide Remote / On-Site)`,
       style: {
         fontFamily: "system-ui, sans-serif",
         fontSize: 10.5,
         fontWeight: "bold",
-        fill: 0x3ecf8e,
+        fill: 0x94a3b8,
       },
     });
-    loc.position.set(0, 130);
+    loc.position.set(0, 178);
 
-    c.addChild(title, emailBtn, phoneBtn, loc);
+    c.addChild(title, emailBtn, phoneBtn, ghBtn, liBtn, loc);
 
     this.showInspector({
-      title: "Espresso Bar — Direct Contact",
+      title: "Espresso Bar — Direct Contact & Profiles",
       icon: "",
-      color: 0xff8fab,
-      width: 410,
-      height: 220,
+      color: 0xffffff,
+      width: 420,
+      height: 250,
       x: this.roomWidth * 0.08,
-      y: 90,
+      y: 80,
       content: c,
     });
   }
@@ -328,7 +396,7 @@ export class ContactRoom extends Room {
         fontFamily: "system-ui, sans-serif",
         fontSize: 14,
         fontWeight: "bold",
-        fill: 0x38bdf8,
+        fill: 0xffffff,
       },
     });
     title.position.set(0, 0);
@@ -351,7 +419,7 @@ export class ContactRoom extends Room {
     this.showInspector({
       title: "Collaboration Invitation",
       icon: "",
-      color: 0x38bdf8,
+      color: 0xffffff,
       width: 410,
       height: 200,
       x: this.roomWidth * 0.36,
@@ -364,63 +432,97 @@ export class ContactRoom extends Room {
     const c = new Container();
 
     const title = new Text({
-      text: "Social Channels & Profiles",
+      text: "Social Channels & Profiles (Click to Open)",
       style: {
         fontFamily: "system-ui, sans-serif",
         fontSize: 14,
         fontWeight: "bold",
-        fill: 0xf97316,
+        fill: 0xffffff,
       },
     });
     title.position.set(0, 0);
 
-    const socials = [
+    const socials = PORTFOLIO.contact.socials || [
       {
-        name: "GitHub Profile",
-        desc: "Open-source game experiments, repos, and web tools.",
-        color: 0xf97316,
+        name: "GitHub",
+        handle: "gaurav01singh",
+        url: PORTFOLIO.about.github || "https://github.com/gaurav01singh",
       },
       {
-        name: "LinkedIn Network",
-        desc: "Professional endorsements, background, and updates.",
-        color: 0x38bdf8,
+        name: "LinkedIn",
+        handle: "gaurav10singh",
+        url: PORTFOLIO.about.linkedin || "https://linkedin.com/in/gaurav10singh",
       },
     ];
 
-    let sy = 24;
+    let sy = 28;
     socials.forEach((s) => {
+      const btn = new Container();
+      btn.position.set(0, sy);
+      btn.eventMode = "static";
+      btn.cursor = "pointer";
+
+      const bg = new Graphics()
+        .roundRect(0, 0, 380, 52, 8)
+        .fill({ color: 0x161e2e, alpha: 0.85 })
+        .stroke({ width: 1.5, color: 0x475569 });
+
       const n = new Text({
-        text: s.name,
+        text: `${s.name.toUpperCase()} (Click to Open ↗)`,
         style: {
           fontFamily: "system-ui, sans-serif",
           fontSize: 12,
-          fontWeight: "bold",
-          fill: s.color,
+          fontWeight: "900",
+          fill: 0xffffff,
+          letterSpacing: 0.5,
         },
       });
-      n.position.set(0, sy);
+      n.position.set(12, 8);
 
       const d = new Text({
-        text: s.desc,
+        text: `${s.url}`,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 10.5,
-          fill: 0x8b9ab8,
+          fontSize: 11,
+          fontWeight: "600",
+          fill: 0x94a3b8,
         },
       });
-      d.position.set(0, sy + 18);
+      d.position.set(12, 28);
 
-      c.addChild(n, d);
-      sy += 44;
+      btn.addChild(bg, n, d);
+
+      btn.on("pointerover", () => {
+        bg.clear()
+          .roundRect(0, 0, 380, 52, 8)
+          .fill({ color: 0x1e293b, alpha: 0.95 })
+          .stroke({ width: 2, color: 0xffffff });
+      });
+
+      btn.on("pointerout", () => {
+        bg.clear()
+          .roundRect(0, 0, 380, 52, 8)
+          .fill({ color: 0x161e2e, alpha: 0.85 })
+          .stroke({ width: 1.5, color: 0x475569 });
+      });
+
+      btn.on("pointertap", () => {
+        if (typeof window !== "undefined") {
+          window.open(s.url, "_blank");
+        }
+      });
+
+      c.addChild(btn);
+      sy += 62;
     });
 
     this.showInspector({
       title: "Social Bulletin Board",
       icon: "",
-      color: 0xf97316,
-      width: 410,
-      height: 180,
-      x: this.roomWidth * 0.52,
+      color: 0xffffff,
+      width: 420,
+      height: 200,
+      x: this.roomWidth * 0.5,
       y: 90,
       content: c,
     });

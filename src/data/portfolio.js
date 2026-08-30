@@ -8,8 +8,8 @@ export const PORTFOLIO = {
     email: "gauravsingh02195@gmail.com",
     phone: "+91 6388474535",
     location: "India",
-    github: "https://github.com/Gaurav-Singh-02",
-    linkedin: "https://linkedin.com/in/gauravsingh02",
+    github: "https://github.com/gaurav01singh",
+    linkedin: "https://linkedin.com/in/gaurav10singh",
     role: "Creative Technologist & Unity Game Developer",
     summary:
       "Creative Technologist and Unity game developer crafting games with Unity & C#, high-speed interactive Canvas/PixiJS web experiences, and desktop apps with Electron.js & Node.js.",
@@ -332,6 +332,24 @@ export const PORTFOLIO = {
         engine: "UNITY",
         type: "2D ARCADE",
         color: 0x38bdf8,
+        thumbnail: "./assets/projects/flappy-1.jpg",
+        images: [
+          {
+            url: "./assets/projects/flappy-1.jpg",
+            title: "Arcade Gameplay & Obstacle Physics",
+            desc: "2D physics loop with responsive flap impulse, procedural pipe obstacle spawning, and dynamic score counter.",
+          },
+          {
+            url: "./assets/projects/flappy-2.jpg",
+            title: "Game Over & Scorecard Summary",
+            desc: "State machine managing session score preservation, high score tracking, and instant replay flow.",
+          },
+          {
+            url: "./assets/projects/flappy-3.jpg",
+            title: "Unity 2D Engine Scene & Inspector",
+            desc: "Custom C# BirdController script, Rigidbody2D dynamics, BoxCollider2D trigger collision detection.",
+          },
+        ],
         bullets: [
           "Developed a 2D arcade game using Unity and C#. Applied game state management and responsive UI elements.",
           "Implemented player movement, procedural obstacle spawning, collision detection, and score tracking.",
@@ -351,6 +369,24 @@ export const PORTFOLIO = {
         engine: "UNITY",
         type: "3D CASUAL",
         color: 0xf59e0b,
+        thumbnail: "./assets/projects/runner-1.jpg",
+        images: [
+          {
+            url: "./assets/projects/runner-1.jpg",
+            title: "Cyberpunk 3D Runner Gameplay",
+            desc: "Third-person character runner dodging laser barricades, speed booster tracks, and collecting golden energy rings.",
+          },
+          {
+            url: "./assets/projects/runner-2.jpg",
+            title: "City Highway & Magnet Powerups",
+            desc: "Dynamic highway level progression, speed multiplier combos, and active magnetic coin attraction system.",
+          },
+          {
+            url: "./assets/projects/runner-3.jpg",
+            title: "Unity 3D Project Architecture",
+            desc: "ObstacleSpawner algorithms, procedural highway tile instantiation, and optimized mesh rendering.",
+          },
+        ],
         bullets: [
           "Created an endless runner game with dynamic obstacle generation and scoring mechanics.",
           "Developed player controls, collision systems, and gameplay progression features.",
@@ -371,6 +407,24 @@ export const PORTFOLIO = {
         engine: "MERN",
         type: "COMMUNITY PLATFORM",
         color: 0xa855f7,
+        thumbnail: "./assets/projects/tutorial-1.jpg",
+        images: [
+          {
+            url: "./assets/projects/tutorial-1.jpg",
+            title: "Community Tutorial Feed & Filter",
+            desc: "Interactive feed of developer tutorials with search filters, technology tags (React, Node.js, Unity), and reading stats.",
+          },
+          {
+            url: "./assets/projects/tutorial-2.jpg",
+            title: "Real-Time Markdown Editor",
+            desc: "Split-screen content creation suite with syntax highlighting, live preview formatting, and instant asset embedding.",
+          },
+          {
+            url: "./assets/projects/tutorial-3.jpg",
+            title: "Interactive Article & Code Playground",
+            desc: "In-browser JavaScript playground execution, threaded developer comments, and JWT authenticated profile system.",
+          },
+        ],
         bullets: [
           "Developed a scalable tutorial-sharing platform using the MERN stack. Integrated a Markdown editor for content creation and formatting.",
           "Implemented JWT-based authentication and bcrypt password encryption. Designed REST APIs and database schemas for efficient content management.",
@@ -391,6 +445,24 @@ export const PORTFOLIO = {
         engine: "MERN",
         type: "MARKETPLACE",
         color: 0x10b981,
+        thumbnail: "./assets/projects/ecommerce-1.jpg",
+        images: [
+          {
+            url: "./assets/projects/ecommerce-1.jpg",
+            title: "Hardware & Tech Storefront",
+            desc: "Dynamic product catalog with multi-facet category filters, real-time price sliders, and star rating analytics.",
+          },
+          {
+            url: "./assets/projects/ecommerce-2.jpg",
+            title: "Interactive Product Showcase",
+            desc: "Multi-image thumbnail gallery, custom switch selectors, interactive specifications matrix, and shopping cart drawer.",
+          },
+          {
+            url: "./assets/projects/ecommerce-3.jpg",
+            title: "Secure Braintree Checkout Flow",
+            desc: "End-to-end encrypted payment processing, coupon code validator, order tax calculation, and order tracking.",
+          },
+        ],
         bullets: [
           "Built a full-stack e-commerce application using MongoDB, Express.js, React, and Node.js.",
           "Developed RESTful APIs for product, user, and order management.",
@@ -454,12 +526,12 @@ export const PORTFOLIO = {
       {
         name: "GitHub",
         handle: "Gaurav-Singh-02",
-        url: "https://github.com/Gaurav-Singh-02",
+        url: "https://github.com/gaurav01singh",
       },
       {
         name: "LinkedIn",
         handle: "gauravsingh02",
-        url: "https://linkedin.com/in/gauravsingh02",
+        url: "https://linkedin.com/in/gaurav10singh",
       },
     ],
     html: `

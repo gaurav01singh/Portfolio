@@ -3,17 +3,311 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Gaurav Kumar Singh - Creative Technologist & Game Developer Portfolio built with PixiJS and Canvas." />
-    <meta name="theme-color" content="#0a0a0f" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta
+      name="description"
+      content="Gaurav Kumar Singh - Creative Technologist & Game Developer Portfolio built with PixiJS and Canvas."
+    />
+    <meta name="theme-color" content="#06080e" />
+
+    <!-- Google Fonts for High-Tech / Cyber & Cinematic Aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="/style.css" />
     <title>Gaurav Kumar Singh | Creative Technologist & Game Developer</title>
   </head>
 
   <body>
+    <!-- Cinematic Game Preloader & Title Screen Overlay -->
+    <div id="loading-screen" class="loading-screen">
+      <!-- Overhead Directional Light Sheen -->
+      <div class="loader-overhead-light"></div>
+
+      <!-- Faint Technical HUD Arcs & Reticles SVG -->
+      <svg
+        class="loader-hud-svg"
+        viewBox="0 0 1920 1080"
+        preserveAspectRatio="none"
+      >
+        <!-- Technical Orbital Arcs -->
+        <path
+          d="M 120 280 C 600 120, 1320 120, 1800 280"
+          fill="none"
+          stroke="rgba(255,255,255,0.06)"
+          stroke-width="1.2"
+        />
+        <path
+          d="M 240 380 C 700 240, 1220 240, 1680 380"
+          fill="none"
+          stroke="rgba(255,255,255,0.035)"
+          stroke-width="1"
+        />
+        <path
+          d="M 0 540 C 500 480, 1420 480, 1920 540"
+          fill="none"
+          stroke="rgba(255,255,255,0.025)"
+          stroke-width="0.8"
+        />
+        <!-- Top Center Apex Arc Accent -->
+        <path
+          d="M 820 135 C 900 128, 1020 128, 1100 135"
+          fill="none"
+          stroke="rgba(255,255,255,0.22)"
+          stroke-width="1.5"
+        />
+        <!-- Corner Framing Reticles -->
+        <path
+          d="M 40 70 L 40 40 L 70 40"
+          fill="none"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="1.5"
+        />
+        <path
+          d="M 1850 40 L 1880 40 L 1880 70"
+          fill="none"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="1.5"
+        />
+        <path
+          d="M 40 1010 L 40 1040 L 70 1040"
+          fill="none"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="1.5"
+        />
+        <path
+          d="M 1850 1040 L 1880 1040 L 1880 1010"
+          fill="none"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="1.5"
+        />
+      </svg>
+
+      <!-- Top Header Meta & Prominent Author Identity -->
+      <div class="loader-top-meta">
+        <div class="author-brand-block">
+          <h1 class="author-name">GAURAV KUMAR SINGH</h1>
+          <p class="author-role">CREATIVE TECHNOLOGIST &bull; UNITY GAME DEVELOPER</p>
+        </div>
+        <div class="sys-badge">
+          <span class="pulse-dot"></span>
+          <span>SYSTEM INITIALIZATION // V8.8</span>
+        </div>
+      </div>
+
+      <!-- Center Calibration & Launch Module Box -->
+      <div class="loader-center-module">
+        <div class="module-frame">
+          <div class="frame-corner corner-tl"></div>
+          <div class="frame-corner corner-tr"></div>
+          <div class="frame-corner corner-bl"></div>
+          <div class="frame-corner corner-br"></div>
+
+          <div class="progress-section">
+            <div class="progress-meta">
+              <span id="loading-status" class="loading-status"
+                >INITIALIZING GRAPHICS ENGINE...</span
+              >
+              <span id="loading-percent" class="loading-percent">00%</span>
+            </div>
+            <div class="progress-track">
+              <div
+                id="progress-fill"
+                class="progress-fill"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+
+          <div id="action-trigger" class="action-trigger">
+            <button id="enter-btn" class="enter-btn" type="button">
+              <span>BEGIN JOURNEY</span>
+              <svg
+                viewBox="0 0 24 24"
+                width="14"
+                height="14"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+            <span class="press-key-tip"
+              >CLICK OR PRESS ANY KEY TO INITIALIZE</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Controls (Bottom-Left) -->
+      <div class="loader-bottom-left">
+        <div class="tech-glyphs">
+          <span class="glyph-mark">&#x25C6;</span>
+          <span class="glyph-mark">&#x25B2;</span>
+          <span class="glyph-mark">&#x2756;</span>
+        </div>
+        <div class="controls-preview">
+          <div class="control-badge">
+            <kbd>A</kbd><kbd>D</kbd> <span>WALK</span>
+          </div>
+          <div class="control-badge">
+            <kbd>W</kbd> / <kbd>SPACE</kbd> <span>JUMP</span>
+          </div>
+          <div class="control-badge"><kbd>E</kbd> <span>ENTER</span></div>
+          <div class="control-badge"><kbd>ESC</kbd> <span>EXIT</span></div>
+        </div>
+      </div>
+
+      <!-- Bottom-Right Hero Typography (Exact Reference Style) -->
+      <div class="loader-bottom-right">
+        <h1 class="hero-quote">
+          PREPARE YOUR JOURNEY<br />
+          ACROSS LIVING WORLDS . . .
+        </h1>
+        <div class="hero-subtext">
+          <span class="author-tag"
+            >GAURAV KUMAR SINGH // CREATIVE TECHNOLOGIST &bull; UNITY GAME
+            DEVELOPER</span
+          >
+          <span class="hero-foot"
+            >FOR BEST EXPERIENCE TURN AUDIO ON / USE KEYBOARD &amp; MOUSE</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Canvas Application -->
     <div id="app">
       <div id="pixi-container"></div>
+
+      <!-- Fast-Travel Quick Teleport HUD Navigation Bar -->
+      <nav
+        id="teleport-nav"
+        class="teleport-nav"
+        aria-label="Fast Travel Teleport"
+      >
+        <div class="teleport-badge">
+          <span class="teleport-pulse"></span>
+          <span>FAST TRAVEL</span>
+        </div>
+        <div class="teleport-buttons">
+          <button
+            class="teleport-btn"
+            data-target="about"
+            type="button"
+            title="Teleport to About Me"
+          >
+            <span class="btn-text">ABOUT</span>
+          </button>
+          <button
+            class="teleport-btn"
+            data-target="skills"
+            type="button"
+            title="Teleport to Skills"
+          >
+            <span class="btn-text">SKILLS</span>
+          </button>
+          <button
+            class="teleport-btn"
+            data-target="experience"
+            type="button"
+            title="Teleport to Experience"
+          >
+            <span class="btn-text">EXPERIENCE</span>
+          </button>
+          <button
+            class="teleport-btn"
+            data-target="projects"
+            type="button"
+            title="Teleport to Projects"
+          >
+            <span class="btn-text">PROJECTS</span>
+          </button>
+          <button
+            class="teleport-btn"
+            data-target="education"
+            type="button"
+            title="Teleport to Education"
+          >
+            <span class="btn-text">EDUCATION</span>
+          </button>
+          <button
+            class="teleport-btn"
+            data-target="contact"
+            type="button"
+            title="Teleport to Contact"
+          >
+            <span class="btn-text">CONTACT</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- Mobile Touch Controls HUD -->
+      <div id="mobile-controls" class="mobile-controls">
+        <!-- D-Pad Left / Right -->
+        <div class="mobile-dpad">
+          <button
+            id="touch-left"
+            class="mobile-touch-btn dpad-btn"
+            type="button"
+            aria-label="Walk Left"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="28"
+              height="28"
+              fill="currentColor"
+            >
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg>
+          </button>
+          <button
+            id="touch-right"
+            class="mobile-touch-btn dpad-btn"
+            type="button"
+            aria-label="Walk Right"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              width="28"
+              height="28"
+              fill="currentColor"
+            >
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mobile-actions">
+          <button
+            id="touch-enter"
+            class="mobile-touch-btn action-btn enter-action-btn"
+            type="button"
+            aria-label="Enter Room"
+          >
+            <span>ENTER</span>
+          </button>
+          <button
+            id="touch-jump"
+            class="mobile-touch-btn action-btn jump-action-btn"
+            type="button"
+            aria-label="Jump"
+          >
+            <span>JUMP</span>
+          </button>
+        </div>
+      </div>
     </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

@@ -15,7 +15,7 @@ export class Room extends Container {
     this.accentColor = options.accentColor ?? 0x3ecf8e;
     this.roomTitle = options.title ?? "Room";
     this.roomType = options.type ?? "Studio";
-    this.icon = options.icon ?? "🏛️";
+    this.icon = options.icon ?? "";
 
     // Room boundaries
     this.roomWidth = this.screenWidth;
@@ -172,7 +172,7 @@ export class Room extends Container {
     this.uiLayer.addChild(this.exitBtn);
   }
 
-  buildRoom() {}
+  buildRoom() { }
 
   // Helper: Register an interactive prop / furniture with hover indicator & inspector
   addInteractiveProp(options) {
@@ -263,7 +263,7 @@ export class Room extends Container {
 
     // Dynamic height calculation — ALWAYS encloses the full content height with generous padding
     const calculatedH = options.content ? content.height + 95 : 260;
-    const inspH = Math.max(180, options.height ?? calculatedH);
+    const inspH = Math.max(300, options.height ?? calculatedH);
 
     let posX = options.x ?? (this.roomWidth - inspW) / 2;
     let posY = options.y ?? 60;

@@ -163,7 +163,7 @@ export class World extends Container {
       .stroke({ width: 1.5, color: 0x222a3d });
 
     const hudTxt = new Text({
-      text: "🕹️ [A][D]/Arrows: Walk · [W]/Space: Jump · [E]/Click: Enter · [ESC]: Exit",
+      text: "[A][D]/Arrows: Walk · [W]/Space: Jump · [E]/Click: Enter · [ESC]: Exit",
       style: {
         fontFamily: "system-ui, sans-serif",
         fontSize: 11,
@@ -205,6 +205,34 @@ export class World extends Container {
 
       default:
         console.warn("Unknown room id:", id);
+    }
+  }
+
+  teleportToBuilding(id, autoOpen = false) {
+    // If a room is currently active, close it
+    if (this.roomManager && this.roomManager.currentRoom) {
+      this.roomManager.close();
+    }
+
+    const building = this.portfolioBuildings.find((b) => b.data.id === id);
+    if (!building) return;
+
+    // Teleport player directly in front of the building
+    this.player.x = building.x;
+    this.player.y = this.groundY;
+    this.player.vx = 0;
+    this.player.vy = 0;
+
+    // Trigger proximity check immediately
+    this.checkProximity(1);
+
+    // If autoOpen is true, open the room after a brief smooth transition
+    if (autoOpen) {
+      setTimeout(() => {
+        if (!this.roomManager.currentRoom) {
+          this.openRoomById(id);
+        }
+      }, 180);
     }
   }
 

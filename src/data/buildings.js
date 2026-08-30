@@ -2,7 +2,7 @@ export const buildingDefs = [
   {
     id: "about",
     label: "ABOUT ME",
-    icon: "👤",
+    icon: "",
     color: 0xf7f7f7,
     x: 920,
     w: 230,
@@ -11,7 +11,7 @@ export const buildingDefs = [
   {
     id: "skills",
     label: "SKILLS",
-    icon: "⚡",
+    icon: "",
     color: 0xfacc15,
     x: 1390,
     w: 260,
@@ -20,7 +20,7 @@ export const buildingDefs = [
   {
     id: "experience",
     label: "EXPERIENCE",
-    icon: "💼",
+    icon: "",
     color: 0xff6b6b,
     x: 1920,
     w: 250,
@@ -29,7 +29,7 @@ export const buildingDefs = [
   {
     id: "projects",
     label: "PROJECTS",
-    icon: "🕹️",
+    icon: "",
     color: 0x38bdf8,
     x: 2490,
     w: 260,
@@ -38,7 +38,7 @@ export const buildingDefs = [
   {
     id: "education",
     label: "EDUCATION",
-    icon: "🎓",
+    icon: "",
     color: 0xc084fc,
     x: 3020,
     w: 230,
@@ -47,7 +47,7 @@ export const buildingDefs = [
   {
     id: "contact",
     label: "CONTACT",
-    icon: "✉️",
+    icon: "",
     color: 0xff8fab,
     x: 3550,
     w: 220,

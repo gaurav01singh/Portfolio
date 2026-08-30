@@ -6,7 +6,7 @@ export class SkillTerminal extends Container {
 
     this.skill = skillData;
     this.title = skillData.name;
-    this.icon = skillData.icon ?? "⚡";
+    this.icon = skillData.icon ?? "";
     this.level = skillData.level ?? "Advanced";
     this.progress = skillData.progress ?? 0.9;
     this.category = skillData.category ?? "Tech";

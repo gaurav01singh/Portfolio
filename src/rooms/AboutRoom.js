@@ -1,6 +1,5 @@
 import { Container, Graphics, Text } from "pixi.js";
 import { Room } from "./Room";
-import { Player } from "../player/Player";
 import { Spring } from "../utils/Juice";
 import { PORTFOLIO } from "../data/portfolio";
 import { createAboutShader } from "../utils/RoomShaders";
@@ -8,9 +7,9 @@ import { createAboutShader } from "../utils/RoomShaders";
 export class AboutRoom extends Room {
   constructor(app) {
     super(app, {
-      accentColor: PORTFOLIO.about.accentColor ?? 0x3ecf8e,
-      title: "Gaurav's Dev Studio",
-      type: "Studio",
+      accentColor: PORTFOLIO.about.accentColor ?? 0xffffff,
+      title: `${PORTFOLIO.about.title} · ${PORTFOLIO.about.fullName}`,
+      type: "Observatory",
       icon: "",
     });
   }
@@ -18,435 +17,772 @@ export class AboutRoom extends Room {
   buildRoom() {
     const rw = this.roomWidth;
     const rh = this.roomHeight;
-    const floorY = rh * 0.72;
+    const floorY = rh * 0.78;
 
-    // Attach Warm Ambient Studio Shader
+    this.time = 0;
+
+    // Animation tracking arrays
+    this.stars = [];
+    this.shootingStars = [];
+    this.astrolabeRings = [];
+    this.stations = [];
+
+    // Attach Cosmic Nebula Shader
     this.shaderFilter = createAboutShader();
     if (this.shaderFilter) {
       this.backgroundLayer.filters = [this.shaderFilter];
     }
 
     // ============================================
-    // 1. BACKGROUND: ROOM WALLS & WINDOW
+    // 1. DEEP SPACE SKY & INTERSTELLAR NEBULA
     // ============================================
-    const wall = new Graphics();
+    const skyGfx = new Graphics();
 
-    // Studio Wall with warm ambient gradient styling
-    wall.rect(0, 0, rw, floorY).fill(0x181c28);
+    const skyStops = [
+      { y: 0, color: 0x030712 },
+      { y: floorY * 0.35, color: 0x070d1e },
+      { y: floorY * 0.65, color: 0x0f172a },
+      { y: floorY * 0.88, color: 0x1e1b4b },
+      { y: floorY, color: 0x312e81 },
+    ];
 
-    // Warm brick/paneling texture
-    for (let by = 20; by < floorY - 20; by += 28) {
-      for (let bx = 10; bx < rw; bx += 70) {
-        const offset = (Math.floor(by / 28) % 2) * 35;
-        wall
-          .moveTo(bx + offset, by)
-          .lineTo(bx + offset + 50, by)
-          .stroke({ width: 1, color: 0x222838, alpha: 0.7 });
+    for (let i = 0; i < skyStops.length - 1; i++) {
+      const top = skyStops[i];
+      const bot = skyStops[i + 1];
+      const bandH = bot.y - top.y;
+      const subSteps = 6;
+      for (let s = 0; s < subSteps; s++) {
+        const t = s / subSteps;
+        const cy = top.y + t * bandH;
+        const ch = bandH / subSteps + 1;
+        const color = this.interpolateColor(top.color, bot.color, t);
+        skyGfx.rect(0, cy, rw, ch).fill(color);
       }
     }
+    this.backgroundLayer.addChild(skyGfx);
 
-    // Cozy Night Window (Center-Left)
-    wall
-      .roundRect(rw * 0.15, 60, 140, 160, 12)
-      .fill(0x0a1020)
-      .stroke({ width: 6, color: 0x3d3028 });
+    // Glowing Celestial Moon
+    const moonCont = new Container();
+    const moonX = rw * 0.85;
+    const moonY = floorY * 0.28;
+    moonCont.position.set(moonX, moonY);
 
-    // Moon & Stars outside window
-    wall.circle(rw * 0.15 + 100, 105, 16).fill(0xffeaa7);
-    wall.circle(rw * 0.15 + 40, 90, 2).fill(0xffffff);
-    wall.circle(rw * 0.15 + 65, 140, 2).fill(0xffffff);
-    wall.circle(rw * 0.15 + 115, 170, 1.5).fill(0xffffff);
+    const moonHalo = new Graphics();
+    moonHalo.circle(0, 0, 80).fill({ color: 0xe0e7ff, alpha: 0.08 });
+    moonHalo.circle(0, 0, 52).fill({ color: 0xe0e7ff, alpha: 0.16 });
+    moonHalo.circle(0, 0, 32).fill({ color: 0xf8fafc, alpha: 0.35 });
+    moonHalo.circle(0, 0, 22).fill(0xffffff);
 
-    // Window crossbeams
-    wall.rect(rw * 0.15 + 68, 60, 4, 160).fill(0x3d3028);
-    wall.rect(rw * 0.15, 140, 140, 4).fill(0x3d3028);
+    // Subtle moon craters
+    moonHalo.circle(-6, -4, 4).fill({ color: 0xc7d2fe, alpha: 0.5 });
+    moonHalo.circle(5, 6, 3).fill({ color: 0xc7d2fe, alpha: 0.45 });
+    moonHalo.circle(7, -6, 2.5).fill({ color: 0xc7d2fe, alpha: 0.4 });
 
-    // Motivational Poster: "EAT. CODE. SHIP."
-    wall
-      .roundRect(rw * 0.46, 70, 100, 70, 4)
-      .fill(0x111624)
-      .stroke({ width: 3, color: 0x3ecf8e });
-    wall.rect(rw * 0.46 + 6, 76, 88, 58).fill(0x0c101c);
-    wall.circle(rw * 0.46 + 50, 105, 12).fill({ color: 0x3ecf8e, alpha: 0.8 });
+    moonCont.addChild(moonHalo);
+    this.backgroundLayer.addChild(moonCont);
 
-    // Fairy String Lights hanging along the wall
-    for (let lx = 40; lx < rw - 40; lx += 45) {
-      wall.circle(lx, 42, 4.5).fill(0xffd166);
+    // Cosmic Constellation Wireframes
+    const constellationGfx = new Graphics();
+    const constPoints = [
+      { x: rw * 0.14, y: 70 },
+      { x: rw * 0.22, y: 110 },
+      { x: rw * 0.32, y: 85 },
+      { x: rw * 0.44, y: 140 },
+      { x: rw * 0.55, y: 95 },
+      { x: rw * 0.68, y: 130 },
+      { x: rw * 0.78, y: 75 },
+    ];
+
+    constellationGfx.moveTo(constPoints[0].x, constPoints[0].y);
+    for (let i = 1; i < constPoints.length; i++) {
+      constellationGfx.lineTo(constPoints[i].x, constPoints[i].y);
     }
+    constellationGfx.stroke({ width: 1, color: 0x818cf8, alpha: 0.4 });
 
-    this.backgroundLayer.addChild(wall);
+    constPoints.forEach((p) => {
+      constellationGfx.circle(p.x, p.y, 3).fill(0xffffff);
+      constellationGfx
+        .circle(p.x, p.y, 7)
+        .fill({ color: 0x818cf8, alpha: 0.35 });
+    });
+    this.backgroundLayer.addChild(constellationGfx);
+
+    // Twinkling Star Field
+    this.starsContainer = new Container();
+    for (let i = 0; i < 65; i++) {
+      const star = new Graphics();
+      const r = 0.8 + Math.random() * 1.8;
+      star.circle(0, 0, r).fill(0xffffff);
+      star.x = Math.random() * rw;
+      star.y = Math.random() * (floorY - 20);
+      star.alpha = 0.3 + Math.random() * 0.7;
+      this.starsContainer.addChild(star);
+      this.stars.push({
+        gfx: star,
+        baseAlpha: star.alpha,
+        twinkleSpeed: 1.5 + Math.random() * 3.0,
+        seed: Math.random() * 10,
+      });
+    }
+    this.backgroundLayer.addChild(this.starsContainer);
+
+    // Shooting Stars Layer
+    this.shootingStarsGfx = new Graphics();
+    this.backgroundLayer.addChild(this.shootingStarsGfx);
 
     // ============================================
-    // 2. FLOOR & FOREGROUND RUG
+    // 2. OBSERVATORY STONE TERRACE & PROPS
     // ============================================
     const floor = new Graphics();
+    floor.rect(0, floorY, rw, rh - floorY).fill(0x0f172a);
 
-    // Wood floor planks
-    floor.rect(0, floorY, rw, rh - floorY).fill(0x281d14);
-
-    for (let fx = 0; fx < rw; fx += 80) {
+    // Stone Terrace Pavers
+    for (let fx = 0; fx < rw; fx += 60) {
       floor
         .moveTo(fx, floorY)
-        .lineTo(fx - 40, rh)
-        .stroke({ width: 2, color: 0x1a120b, alpha: 0.8 });
+        .lineTo(fx - 25, rh)
+        .stroke({ width: 1.5, color: 0x1e293b, alpha: 0.7 });
     }
 
-    // Cozy patterned oval rug
+    // Celestial Zodiac Inlay Ring on Floor
     floor
-      .ellipse(rw * 0.5, floorY + 40, rw * 0.28, 48)
-      .fill(0x2d3a4f)
-      .stroke({ width: 4, color: 0x3ecf8e, alpha: 0.6 });
+      .circle(rw * 0.5, floorY + 48, 85)
+      .stroke({ width: 2, color: 0x334155, alpha: 0.6 });
+    floor
+      .circle(rw * 0.5, floorY + 48, 55)
+      .stroke({ width: 1, color: 0x475569, alpha: 0.5 });
+    floor
+      .circle(rw * 0.5, floorY + 48, 18)
+      .fill({ color: 0x1e293b, alpha: 0.8 });
+
+    // Stone Balustrade & Carved Railing
+    floor.rect(0, floorY - 8, rw, 8).fill(0x1e293b);
+
+    for (let bx = 20; bx < rw; bx += 65) {
+      floor.roundRect(bx - 4, floorY - 26, 8, 26, 2).fill(0x334155);
+      floor.rect(bx - 6, floorY - 28, 12, 4).fill(0x64748b);
+    }
+    floor.rect(0, floorY - 20, rw, 4).fill(0x475569);
 
     this.foregroundLayer.addChild(floor);
 
-    // Ambient warm light cone from ceiling lamp
-    const lightCone = new Graphics()
-      .moveTo(rw * 0.5, 0)
-      .lineTo(rw * 0.25, rh)
-      .lineTo(rw * 0.75, rh)
-      .closePath()
-      .fill({ color: 0xffe8a1, alpha: 0.05 });
-    this.ambientLightLayer.addChild(lightCone);
+    // Stargazer Astronomical Telescope (Left Corner)
+    this.createStargazerTelescope(rw * 0.08, floorY - 8);
+
+    // Rotating Armillary Astrolabe (Right Corner)
+    this.createArmillaryAstrolabe(rw * 0.92, floorY - 8);
 
     // ============================================
-    // 3. INTERACTIVE PHYSICAL FURNITURE PROPS
+    // 3. THREE FROSTED OBSIDIAN DOSSIER STATIONS (FROM PORTFOLIO.JS)
     // ============================================
+    const stationW = Math.min(360, (rw - 120) / 3);
+    const stationH = 340;
+    const startX = (rw - (stationW * 3 + 40)) / 2 + stationW / 2;
+    const cardY = 82 + stationH / 2;
 
-    // PROP 1: Dual-Monitor Battlestation Desk (Right)
-    const deskGfx = new Graphics();
+    // --- Station 1: VOYAGER BIOGRAPHY (Left) ---
+    this.createVoyagerStation(startX, cardY, stationW, stationH);
 
-    // Desk Wooden Table
-    deskGfx
-      .roundRect(-90, -40, 180, 40, 6)
-      .fill(0x4f372a)
-      .stroke({ width: 3, color: 0x1f1510 });
+    // --- Station 2: CAREER & EDUCATION HIGHLIGHTS (Center) ---
+    this.createMetricsStation(
+      startX + stationW + 20,
+      cardY,
+      stationW,
+      stationH,
+    );
 
-    // Desk Legs
-    deskGfx.rect(-80, 0, 10, floorY * 0.15).fill(0x1f1510);
-    deskGfx.rect(70, 0, 10, floorY * 0.15).fill(0x1f1510);
+    // --- Station 3: DEV MANTRAS & CHANNELS (Right) ---
+    this.createPhilosophyStation(
+      startX + (stationW + 20) * 2,
+      cardY,
+      stationW,
+      stationH,
+    );
+  }
 
-    // Dual Monitors
-    deskGfx
-      .roundRect(-75, -110, 70, 52, 4)
-      .fill(0x0a0d14)
-      .stroke({ width: 2.5, color: 0x3ecf8e });
+  createVoyagerStation(x, y, w, h) {
+    const cont = new Container();
+    cont.position.set(x, y);
+    cont.eventMode = "static";
+    cont.cursor = "pointer";
 
-    deskGfx.rect(-70, -105, 60, 42).fill(0x081c14); // Screen 1 Glow
+    const spring = new Spring(1.0, 260, 14);
 
-    for (let l = 0; l < 5; l++) {
-      deskGfx.rect(-66, -100 + l * 8, 30 + (l % 2) * 16, 3).fill(0x3ecf8e, 0.8);
-    }
+    // Drop Shadow
+    const shadow = new Graphics()
+      .roundRect(-w / 2 + 5, -h / 2 + 7, w, h, 16)
+      .fill({ color: 0x000000, alpha: 0.65 });
 
-    deskGfx
-      .roundRect(5, -108, 65, 48, 4)
-      .fill(0x0a0d14)
-      .stroke({ width: 2.5, color: 0x38bdf8 });
+    // 0.5 Alpha Frosted Glass Body
+    const bg = new Graphics();
+    this.drawObservatoryShell(bg, w, h, false);
 
-    deskGfx.rect(10, -103, 55, 38).fill(0x091829); // Screen 2 Glow
-
-    // RGB Mechanical Keyboard & Mouse
-    deskGfx.roundRect(-40, -32, 50, 10, 2).fill(0x1a2130);
-    deskGfx.roundRect(20, -30, 12, 8, 2).fill(0x3ecf8e);
-
-    this.addInteractiveProp({
-      x: rw * 0.76,
-      y: floorY + 10,
-      graphics: deskGfx,
-      label: "BATTLESTATION",
-      color: 0x3ecf8e,
-      badgeY: -130,
-      onInspect: () => {
-        this.inspectBattlestation();
-      },
-    });
-
-    // PROP 2: Tall Bookshelf & Retro Trophy (Left)
-    const shelfGfx = new Graphics();
-
-    shelfGfx
-      .roundRect(-55, -160, 110, 160, 6)
-      .fill(0x3a281e)
-      .stroke({ width: 3, color: 0x1b120c });
-
-    // Shelves
-    shelfGfx.rect(-50, -120, 100, 6).fill(0x271911);
-    shelfGfx.rect(-50, -75, 100, 6).fill(0x271911);
-    shelfGfx.rect(-50, -30, 100, 6).fill(0x271911);
-
-    // Books on shelves
-    shelfGfx.rect(-44, -152, 14, 30).fill(0x3ecf8e);
-    shelfGfx.rect(-28, -156, 16, 34).fill(0xffa94d);
-    shelfGfx.rect(-10, -148, 14, 26).fill(0x748ffc);
-    shelfGfx.rect(8, -154, 18, 32).fill(0xf43f5e);
-
-    // Mini Golden Trophy & Game Cartridge
-    shelfGfx.roundRect(-35, -112, 16, 24, 2).fill(0xfacc15);
-    shelfGfx.circle(-27, -114, 6).fill(0xfacc15);
-    shelfGfx.roundRect(6, -108, 26, 20, 3).fill(0x94a3b8);
-
-    this.addInteractiveProp({
-      x: rw * 0.12,
-      y: floorY + 10,
-      graphics: shelfGfx,
-      label: "CS & GAME ARCHIVE",
-      color: 0xffa94d,
-      badgeY: -180,
-      onInspect: () => {
-        this.inspectBookshelf();
-      },
-    });
-
-    // PROP 3: Steaming Chai Table & Acoustic Guitar (Center-Left)
-    const loungeGfx = new Graphics();
-
-    // Round Coffee Table
-    loungeGfx
-      .ellipse(0, 0, 48, 18)
-      .fill(0x422d21)
-      .stroke({ width: 2.5, color: 0x1b120c });
-    loungeGfx.rect(-4, 0, 8, 26).fill(0x1b120c);
-
-    // Steaming Mug
-    loungeGfx.roundRect(-6, -16, 12, 14, 2).fill(0xffffff);
-
-    // Acoustic Guitar leaning against the table
-    loungeGfx
-      .ellipse(40, -18, 16, 24)
-      .fill(0xc87d47)
-      .stroke({ width: 2, color: 0x111111 });
-    loungeGfx
-      .rect(37, -65, 6, 45)
-      .fill(0x6b4423)
-      .stroke({ width: 1.5, color: 0x111111 });
-
-    this.addInteractiveProp({
-      x: rw * 0.36,
-      y: floorY + 20,
-      graphics: loungeGfx,
-      label: "CHAI & GUITAR",
-      color: 0xec4899,
-      badgeY: -80,
-      onInspect: () => {
-        this.inspectLounge();
-      },
-    });
-
-    // ============================================
-    // 4. ANIMATED GAURAV AVATAR (Center-Right)
-    // ============================================
-    this.avatarSpring = new Spring(1.0, 260, 14);
-
-    this.avatarHolder = new Container();
-    this.avatarHolder.position.set(rw * 0.58, floorY);
-    this.avatarHolder.eventMode = "static";
-    this.avatarHolder.cursor = "pointer";
-
-    this.avatar = new Player();
-    this.avatar.scale.set(1.5);
-
-    this.avatarHolder.addChild(this.avatar);
-    this.characterLayer.addChild(this.avatarHolder);
-
-    // Gaurav Badge
-    const gBadge = new Container();
-    gBadge.position.set(0, -175);
-
-    const gbBg = new Graphics()
-      .roundRect(-60, -12, 120, 24, 6)
-      .fill({ color: 0x090c16, alpha: 0.9 })
-      .stroke({ width: 1.5, color: 0x3ecf8e });
-
-    const gbTxt = new Text({
-      text: "GAURAV (CLICK ME)",
+    // Milestone Badge (From PORTFOLIO.about.eyebrow)
+    const badgeTxt = new Text({
+      text: PORTFOLIO.about.eyebrow || "DEVELOPER PROFILE",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 9.5,
+        fontSize: 9,
         fontWeight: "900",
-        fill: 0x3ecf8e,
-        letterSpacing: 0.5,
+        fill: 0xe2e8f0,
+        letterSpacing: 0.8,
       },
     });
-    gbTxt.anchor.set(0.5);
+    badgeTxt.position.set(8, 4);
 
-    gBadge.addChild(gbBg, gbTxt);
-    this.avatarHolder.addChild(gBadge);
+    const bBg = new Graphics()
+      .roundRect(0, 0, badgeTxt.width + 16, 22, 6)
+      .fill({ color: 0x1e293b, alpha: 0.8 })
+      .stroke({ width: 1, color: 0x475569, alpha: 0.8 });
 
-    this.avatarQuotes = [
-      "Welcome to my studio! I build games in Unity and real-time apps with PixiJS!",
-      "Ctrl+S is my daily love language.",
-      "99 bugs in the code, fix 1... 127 bugs in the code!",
-      "Check out the Battlestation and Bookshelf to explore my work!",
-    ];
-    this.quoteIdx = 0;
+    const badgeCont = new Container();
+    badgeCont.position.set(-w / 2 + 16, -h / 2 + 16);
+    badgeCont.addChild(bBg, badgeTxt);
 
-    this.avatarHolder.on("pointertap", () => {
-      this.avatarSpring.set(0.7);
-      this.quoteIdx = (this.quoteIdx + 1) % this.avatarQuotes.length;
-      this.inspectAvatar(this.avatarQuotes[this.quoteIdx]);
-    });
-  }
-
-  inspectBattlestation() {
-    const c = new Container();
-
-    const title = new Text({
-      text: "Gaurav Kumar Singh — Creative Technologist",
+    // Name & Title (From PORTFOLIO.about)
+    const nameTxt = new Text({
+      text: PORTFOLIO.about.fullName,
       style: {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 14,
-        fontWeight: "bold",
-        fill: 0x3ecf8e,
-      },
-    });
-    title.position.set(0, 0);
-
-    const bio = new Text({
-      text: "Hi, I'm Gaurav! I currently build real-time interactive applications and games at Binaire Pvt. Ltd. with Electron.js, PixiJS, Node.js, and Unity C#.\n\nI love building things that respond instantly: tight gameplay mechanics, responsive desktop experiences, and particle-rich canvas scenes.",
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
-        fill: 0xd0d7de,
-        lineHeight: 18,
-        wordWrap: true,
-        wordWrapWidth: 380,
-      },
-    });
-    bio.position.set(0, 24);
-
-    const current = new Text({
-      text: "CURRENT: Binaire Pvt. Ltd. · India · Unity & Full-Stack",
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 10.5,
-        fontWeight: "bold",
-        fill: 0xfacc15,
-      },
-    });
-    current.position.set(0, 130);
-
-    c.addChild(title, bio, current);
-
-    this.showInspector({
-      title: "Gaurav's Battlestation",
-      icon: "",
-      color: 0x3ecf8e,
-      width: 410,
-      height: 230,
-      x: this.roomWidth * 0.45,
-      y: 90,
-      content: c,
-    });
-  }
-
-  inspectBookshelf() {
-    const c = new Container();
-
-    const title = new Text({
-      text: "Academic Roots & Engineering Philosophy",
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 14,
-        fontWeight: "bold",
-        fill: 0xffa94d,
-      },
-    });
-    title.position.set(0, 0);
-
-    const text = new Text({
-      text: "• B.Tech in Computer Science & Engineering (AKTU, 2021–2025, CGPA 7.0)\n• Shipped multiple Unity commercial casual titles (Bubble Shooter, Ludo, QuickJack) at Qwcodes.\n• Passionate about clean state machines, fast game loops, and reducing memory overhead.",
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
-        fill: 0xd0d7de,
-        lineHeight: 18,
-        wordWrap: true,
-        wordWrapWidth: 380,
-      },
-    });
-    text.position.set(0, 24);
-
-    c.addChild(title, text);
-
-    this.showInspector({
-      title: "CS & Game Archive",
-      icon: "",
-      color: 0xffa94d,
-      width: 410,
-      height: 190,
-      x: this.roomWidth * 0.1,
-      y: 90,
-      content: c,
-    });
-  }
-
-  inspectLounge() {
-    const c = new Container();
-
-    const title = new Text({
-      text: "Creative Flow & Downtime",
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 14,
-        fontWeight: "bold",
-        fill: 0xec4899,
-      },
-    });
-    title.position.set(0, 0);
-
-    const text = new Text({
-      text: "When not optimizing draw calls or profiling shaders, I'm drinking hot chai, playing acoustic tunes, or experimenting with new physics engines and generative AI.\n\nAlways ready to build cool games and interactive apps with ambitious teams.",
-      style: {
-        fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
-        fill: 0xd0d7de,
-        lineHeight: 18,
-        wordWrap: true,
-        wordWrapWidth: 360,
-      },
-    });
-    text.position.set(0, 24);
-
-    c.addChild(title, text);
-
-    this.showInspector({
-      title: "Studio Lounge",
-      icon: "",
-      color: 0xec4899,
-      width: 390,
-      height: 170,
-      x: this.roomWidth * 0.25,
-      y: 110,
-      content: c,
-    });
-  }
-
-  inspectAvatar(quote) {
-    const c = new Container();
-
-    const text = new Text({
-      text: `“${quote}”`,
-      style: {
-        fontFamily: "Georgia, serif",
-        fontSize: 13,
-        fontStyle: "italic",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontSize: 16,
+        fontWeight: "900",
         fill: 0xffffff,
+        letterSpacing: 0.6,
+      },
+    });
+    nameTxt.position.set(-w / 2 + 16, -h / 2 + 48);
+
+    const roleTxt = new Text({
+      text: `${PORTFOLIO.about.role} · ${PORTFOLIO.about.location}`,
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 11.5,
+        fontWeight: "700",
+        fill: 0x94a3b8,
+        lineHeight: 16,
+        wordWrap: true,
+        wordWrapWidth: w - 32,
+      },
+    });
+    roleTxt.position.set(-w / 2 + 16, -h / 2 + 74);
+
+    // Summary Text (From PORTFOLIO.about.summary)
+    const summaryTxt = new Text({
+      text: PORTFOLIO.about.summary,
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 11,
+        fill: 0xd1d5db,
+        lineHeight: 16.5,
+        wordWrap: true,
+        wordWrapWidth: w - 32,
+      },
+    });
+    summaryTxt.position.set(-w / 2 + 16, -h / 2 + 116);
+
+    // Action Button
+    const ctaBg = new Graphics()
+      .roundRect(-w / 2 + 16, h / 2 - 38, w - 32, 28, 6)
+      .fill(0x161e2e)
+      .stroke({ width: 1.5, color: 0x475569 });
+
+    const ctaTxt = new Text({
+      text: "EXPLORE FULL DOSSIER ↗",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 10,
+        fontWeight: "900",
+        fill: 0xffffff,
+        letterSpacing: 0.6,
+      },
+    });
+    ctaTxt.anchor.set(0.5);
+    ctaTxt.position.set(0, h / 2 - 24);
+
+    cont.addChild(
+      shadow,
+      bg,
+      badgeCont,
+      nameTxt,
+      roleTxt,
+      summaryTxt,
+      ctaBg,
+      ctaTxt,
+    );
+
+    cont.on("pointerover", () => {
+      spring.target = 1.04;
+      this.drawObservatoryShell(bg, w, h, true);
+    });
+
+    cont.on("pointerout", () => {
+      spring.target = 1.0;
+      this.drawObservatoryShell(bg, w, h, false);
+    });
+
+    cont.on("pointerdown", () => {
+      spring.set(0.96);
+    });
+
+    cont.on("pointertap", () => {
+      this.inspectBiography();
+    });
+
+    this.furnitureLayer.addChild(cont);
+    this.stations.push({ container: cont, spring });
+  }
+
+  createMetricsStation(x, y, w, h) {
+    const cont = new Container();
+    cont.position.set(x, y);
+    cont.eventMode = "static";
+    cont.cursor = "pointer";
+
+    const spring = new Spring(1.0, 260, 14);
+
+    const shadow = new Graphics()
+      .roundRect(-w / 2 + 5, -h / 2 + 7, w, h, 16)
+      .fill({ color: 0x000000, alpha: 0.65 });
+
+    const bg = new Graphics();
+    this.drawObservatoryShell(bg, w, h, false);
+
+    // Milestone Badge (From PORTFOLIO.education.eyebrow)
+    const badgeTxt = new Text({
+      text: PORTFOLIO.education.eyebrow || "EXPEDITION HIGHLIGHTS",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 9,
+        fontWeight: "900",
+        fill: 0xe2e8f0,
+        letterSpacing: 0.8,
+      },
+    });
+    badgeTxt.position.set(8, 4);
+
+    const bBg = new Graphics()
+      .roundRect(0, 0, badgeTxt.width + 16, 22, 6)
+      .fill({ color: 0x1e293b, alpha: 0.8 })
+      .stroke({ width: 1, color: 0x475569, alpha: 0.8 });
+
+    const badgeCont = new Container();
+    badgeCont.position.set(-w / 2 + 16, -h / 2 + 16);
+    badgeCont.addChild(bBg, badgeTxt);
+
+    // Dynamic metrics pulled 100% from PORTFOLIO
+    const totalProjects = PORTFOLIO.projects?.list?.length || 0;
+    const currentJob = PORTFOLIO.experience?.jobs?.[0];
+    const pastJob = PORTFOLIO.experience?.jobs?.[1];
+    const degree = PORTFOLIO.education?.degree;
+
+    const metrics = [
+      {
+        num: `${totalProjects} PROJECTS`,
+        label: PORTFOLIO.projects?.eyebrow || "Real-Time Games & Applications",
+      },
+      {
+        num: currentJob ? currentJob.company.toUpperCase() : "EXPERIENCE",
+        label: currentJob
+          ? `${currentJob.role} (${currentJob.period})`
+          : "Creative Technologist",
+      },
+      {
+        num: pastJob ? pastJob.company.toUpperCase() : "GAME DEV",
+        label: pastJob
+          ? `${pastJob.role} (${pastJob.period})`
+          : "Unity Game Developer",
+      },
+      {
+        num: degree ? degree.score : "B.TECH CSE",
+        label: degree
+          ? `${degree.title} · ${degree.period}`
+          : "Computer Science and Engineering",
+      },
+    ];
+
+    const metricsCont = new Container();
+    metricsCont.position.set(-w / 2 + 16, -h / 2 + 48);
+
+    metrics.forEach((m, idx) => {
+      const my = idx * 60;
+
+      const mBg = new Graphics()
+        .roundRect(0, my, w - 32, 50, 8)
+        .fill({ color: 0x0f172a, alpha: 0.6 })
+        .stroke({ width: 1, color: 0x334155, alpha: 0.7 });
+
+      const numTxt = new Text({
+        text: m.num,
+        style: {
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontSize: 13.5,
+          fontWeight: "900",
+          fill: 0xffffff,
+          letterSpacing: 0.5,
+        },
+      });
+      numTxt.position.set(12, my + 8);
+
+      const labelTxt = new Text({
+        text: m.label,
+        style: {
+          fontFamily: "system-ui, sans-serif",
+          fontSize: 10,
+          fontWeight: "600",
+          fill: 0x94a3b8,
+          wordWrap: true,
+          wordWrapWidth: w - 60,
+        },
+      });
+      labelTxt.position.set(12, my + 28);
+
+      metricsCont.addChild(mBg, numTxt, labelTxt);
+    });
+
+    // Action Button
+    const ctaBg = new Graphics()
+      .roundRect(-w / 2 + 16, h / 2 - 38, w - 32, 28, 6)
+      .fill(0x161e2e)
+      .stroke({ width: 1.5, color: 0x475569 });
+
+    const ctaTxt = new Text({
+      text: "VIEW CREDENTIALS ↗",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 10,
+        fontWeight: "900",
+        fill: 0xffffff,
+        letterSpacing: 0.6,
+      },
+    });
+    ctaTxt.anchor.set(0.5);
+    ctaTxt.position.set(0, h / 2 - 24);
+
+    cont.addChild(shadow, bg, badgeCont, metricsCont, ctaBg, ctaTxt);
+
+    cont.on("pointerover", () => {
+      spring.target = 1.04;
+      this.drawObservatoryShell(bg, w, h, true);
+    });
+
+    cont.on("pointerout", () => {
+      spring.target = 1.0;
+      this.drawObservatoryShell(bg, w, h, false);
+    });
+
+    cont.on("pointerdown", () => {
+      spring.set(0.96);
+    });
+
+    cont.on("pointertap", () => {
+      this.inspectBiography();
+    });
+
+    this.furnitureLayer.addChild(cont);
+    this.stations.push({ container: cont, spring });
+  }
+
+  createPhilosophyStation(x, y, w, h) {
+    const cont = new Container();
+    cont.position.set(x, y);
+    cont.eventMode = "static";
+    cont.cursor = "pointer";
+
+    const spring = new Spring(1.0, 260, 14);
+
+    const shadow = new Graphics()
+      .roundRect(-w / 2 + 5, -h / 2 + 7, w, h, 16)
+      .fill({ color: 0x000000, alpha: 0.65 });
+
+    const bg = new Graphics();
+    this.drawObservatoryShell(bg, w, h, false);
+
+    // Milestone Badge (From PORTFOLIO.experience.eyebrow)
+    const badgeTxt = new Text({
+      text: PORTFOLIO.experience.eyebrow || "DEVELOPER MANTRAS & LINKS",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 9,
+        fontWeight: "900",
+        fill: 0xe2e8f0,
+        letterSpacing: 0.8,
+      },
+    });
+    badgeTxt.position.set(8, 4);
+
+    const bBg = new Graphics()
+      .roundRect(0, 0, badgeTxt.width + 16, 22, 6)
+      .fill({ color: 0x1e293b, alpha: 0.8 })
+      .stroke({ width: 1, color: 0x475569, alpha: 0.8 });
+
+    const badgeCont = new Container();
+    badgeCont.position.set(-w / 2 + 16, -h / 2 + 16);
+    badgeCont.addChild(bBg, badgeTxt);
+
+    // Quotes directly from PORTFOLIO.about.quotes
+    const quotes = PORTFOLIO.about.quotes || [];
+    const quotesCont = new Container();
+    quotesCont.position.set(-w / 2 + 16, -h / 2 + 48);
+
+    quotes.slice(0, 3).forEach((quote, idx) => {
+      const qy = idx * 62;
+
+      const qBg = new Graphics()
+        .roundRect(0, qy, w - 32, 54, 8)
+        .fill({ color: 0x0f172a, alpha: 0.6 })
+        .stroke({ width: 1, color: 0x334155, alpha: 0.7 });
+
+      const qTitle = new Text({
+        text: `MANTRA 0${idx + 1}`,
+        style: {
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          fontSize: 10,
+          fontWeight: "900",
+          fill: 0xffffff,
+          letterSpacing: 0.5,
+        },
+      });
+      qTitle.position.set(10, qy + 7);
+
+      const qDesc = new Text({
+        text: `"${quote}"`,
+        style: {
+          fontFamily: "system-ui, sans-serif",
+          fontSize: 10,
+          fill: 0x94a3b8,
+          lineHeight: 14,
+          wordWrap: true,
+          wordWrapWidth: w - 52,
+        },
+      });
+      qDesc.position.set(10, qy + 24);
+
+      quotesCont.addChild(qBg, qTitle, qDesc);
+    });
+
+    // Action Button
+    const ctaBg = new Graphics()
+      .roundRect(-w / 2 + 16, h / 2 - 38, w - 32, 28, 6)
+      .fill(0x161e2e)
+      .stroke({ width: 1.5, color: 0x475569 });
+
+    const ctaTxt = new Text({
+      text: "OPEN CONTACT & LINKS ↗",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 10,
+        fontWeight: "900",
+        fill: 0xffffff,
+        letterSpacing: 0.6,
+      },
+    });
+    ctaTxt.anchor.set(0.5);
+    ctaTxt.position.set(0, h / 2 - 24);
+
+    cont.addChild(shadow, bg, badgeCont, quotesCont, ctaBg, ctaTxt);
+
+    cont.on("pointerover", () => {
+      spring.target = 1.04;
+      this.drawObservatoryShell(bg, w, h, true);
+    });
+
+    cont.on("pointerout", () => {
+      spring.target = 1.0;
+      this.drawObservatoryShell(bg, w, h, false);
+    });
+
+    cont.on("pointerdown", () => {
+      spring.set(0.96);
+    });
+
+    cont.on("pointertap", () => {
+      this.inspectBiography();
+    });
+
+    this.furnitureLayer.addChild(cont);
+    this.stations.push({ container: cont, spring });
+  }
+
+  drawObservatoryShell(g, w, h, isHovered) {
+    g.clear();
+
+    if (isHovered) {
+      // Hovered: Illuminated Starlight Glass with pure white silver rim
+      g.roundRect(-w / 2, -h / 2, w, h, 16)
+        .fill({ color: 0x131d2e, alpha: 0.75 })
+        .stroke({ width: 2.0, color: 0xffffff });
+
+      // Top Glass Highlight Bevel
+      g.roundRect(-w / 2 + 3, -h / 2 + 2, w - 6, 2, 1).fill({
+        color: 0xffffff,
+        alpha: 0.45,
+      });
+    } else {
+      // Default: Deep Neutral Obsidian Slate Frosted Glass Shell with 0.5 alpha
+      g.roundRect(-w / 2, -h / 2, w, h, 16)
+        .fill({ color: 0x0a101d, alpha: 0.5 })
+        .stroke({ width: 1.5, color: 0x334155, alpha: 0.85 });
+
+      // Top Glass Highlight Bevel
+      g.roundRect(-w / 2 + 3, -h / 2 + 2, w - 6, 2, 1).fill({
+        color: 0xffffff,
+        alpha: 0.22,
+      });
+    }
+  }
+
+  createStargazerTelescope(x, y) {
+    const cont = new Container();
+    cont.position.set(x, y);
+
+    const g = new Graphics();
+
+    // Tripod Stand
+    g.moveTo(-18, 0).lineTo(0, -50).stroke({ width: 3, color: 0x334155 });
+    g.moveTo(18, 0).lineTo(0, -50).stroke({ width: 3, color: 0x334155 });
+    g.moveTo(0, 0).lineTo(0, -50).stroke({ width: 3.5, color: 0x475569 });
+
+    // Pivot Mount
+    g.circle(0, -50, 6).fill(0x64748b);
+
+    // Brass/Slate Telescope Tube (Angled at 40 degrees towards the stars)
+    g.moveTo(-16, -42)
+      .lineTo(36, -82)
+      .lineTo(44, -76)
+      .lineTo(-8, -36)
+      .closePath()
+      .fill(0x1e293b)
+      .stroke({ width: 1.5, color: 0x94a3b8 });
+
+    // Brass Rings
+    g.rect(6, -60, 5, 12).fill(0xffffff);
+
+    // Front Lens Glass Glow
+    g.ellipse(40, -79, 6, 3).fill({ color: 0x818cf8, alpha: 0.85 });
+
+    cont.addChild(g);
+    this.furnitureLayer.addChild(cont);
+  }
+
+  createArmillaryAstrolabe(x, y) {
+    const cont = new Container();
+    cont.position.set(x, y);
+
+    const g = new Graphics();
+
+    // Marble Pedestal
+    g.roundRect(-16, -24, 32, 24, 4).fill(0x1e293b);
+    g.roundRect(-12, -42, 24, 18, 2).fill(0x334155);
+
+    cont.addChild(g);
+
+    // Rotating Astrolabe Rings
+    this.astrolabeCont = new Container();
+    this.astrolabeCont.position.set(0, -62);
+
+    const ring1 = new Graphics();
+    ring1.circle(0, 0, 22).stroke({ width: 2, color: 0x94a3b8, alpha: 0.85 });
+
+    const ring2 = new Graphics();
+    ring2.circle(0, 0, 16).stroke({ width: 1.5, color: 0xffffff, alpha: 0.9 });
+
+    const coreStar = new Graphics();
+    coreStar.circle(0, 0, 4).fill(0xffffff);
+    coreStar.circle(0, 0, 8).fill({ color: 0x818cf8, alpha: 0.4 });
+
+    this.astrolabeCont.addChild(ring1, ring2, coreStar);
+    cont.addChild(this.astrolabeCont);
+    this.furnitureLayer.addChild(cont);
+  }
+
+  interpolateColor(c1, c2, t) {
+    const r1 = (c1 >> 16) & 255;
+    const g1 = (c1 >> 8) & 255;
+    const b1 = c1 & 255;
+
+    const r2 = (c2 >> 16) & 255;
+    const g2 = (c2 >> 8) & 255;
+    const b2 = c2 & 255;
+
+    const r = Math.round(r1 + (r2 - r1) * t);
+    const g = Math.round(g1 + (g2 - g1) * t);
+    const b = Math.round(b1 + (b2 - b1) * t);
+
+    return (r << 16) | (g << 8) | b;
+  }
+
+  inspectBiography() {
+    const c = new Container();
+
+    const title = new Text({
+      text: PORTFOLIO.about.fullName,
+      style: {
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontSize: 18,
+        fontWeight: "900",
+        fill: 0xffffff,
+        letterSpacing: 0.6,
+      },
+    });
+    title.position.set(0, 0);
+
+    const role = new Text({
+      text: `${PORTFOLIO.about.role} · ${PORTFOLIO.about.location}`,
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 11,
+        fontWeight: "800",
+        fill: 0x94a3b8,
+        letterSpacing: 0.8,
+      },
+    });
+    role.position.set(0, 26);
+
+    const summaryTxt = new Text({
+      text: PORTFOLIO.about.summary,
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 12.5,
+        fill: 0xd1d5db,
         lineHeight: 19,
         wordWrap: true,
-        wordWrapWidth: 320,
+        wordWrapWidth: 490,
       },
     });
-    text.position.set(0, 0);
+    summaryTxt.position.set(0, 52);
 
-    c.addChild(text);
+    const contactHeader = new Text({
+      text: "CONTACT & CHANNELS",
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 11,
+        fontWeight: "900",
+        fill: 0xffffff,
+        letterSpacing: 0.8,
+      },
+    });
+    contactHeader.position.set(0, summaryTxt.y + summaryTxt.height + 14);
+
+    const contactLinks = new Text({
+      text: `GitHub: ${PORTFOLIO.about.github}\nLinkedIn: ${PORTFOLIO.about.linkedin}\nEmail: ${PORTFOLIO.about.email}\nPhone: ${PORTFOLIO.about.phone}`,
+      style: {
+        fontFamily: "system-ui, sans-serif",
+        fontSize: 12,
+        fill: 0x94a3b8,
+        lineHeight: 18,
+      },
+    });
+    contactLinks.position.set(0, contactHeader.y + 22);
+
+    c.addChild(title, role, summaryTxt, contactHeader, contactLinks);
 
     this.showInspector({
-      title: "Gaurav Speaks",
+      title: `${PORTFOLIO.about.title} · ${PORTFOLIO.about.fullName}`,
       icon: "",
-      color: 0x3ecf8e,
-      width: 350,
-      height: 120,
-      x: this.roomWidth * 0.48,
-      y: 110,
+      color: 0xffffff,
+      width: 550,
+      x: (this.roomWidth - 550) / 2,
+      y: 70,
       content: c,
     });
   }
@@ -454,31 +790,82 @@ export class AboutRoom extends Room {
   update(delta) {
     if (this.destroyed) return;
     super.update(delta);
-    if (this.isClosing) return;
+    if (this.destroyed || this.isClosing) return;
+
     const dt = (delta || 1) * 0.016;
+    this.time += dt;
 
+    // Update Cosmic Nebula Shader
     if (this.shaderFilter?.resources?.filterUniforms?.uniforms) {
-      this.shaderFilter.resources.filterUniforms.uniforms.uTime =
-        performance.now() * 0.001;
+      this.shaderFilter.resources.filterUniforms.uniforms.uTime = this.time;
     }
 
-    if (
-      this.avatarSpring &&
-      this.avatarHolder &&
-      !this.avatarHolder.destroyed &&
-      this.avatarHolder.scale &&
-      typeof this.avatarHolder.scale.set === "function"
-    ) {
-      const s = this.avatarSpring.update(dt);
-      this.avatarHolder.scale.set(s, 2.0 - s);
+    const rw = this.roomWidth;
+    const floorY = this.roomHeight * 0.78;
+
+    // 1. Twinkling Stars
+    if (this.stars && this.stars.length) {
+      this.stars.forEach((s) => {
+        if (s.gfx && !s.gfx.destroyed) {
+          s.gfx.alpha =
+            s.baseAlpha *
+            (0.5 + Math.sin(this.time * s.twinkleSpeed + s.seed) * 0.5);
+        }
+      });
     }
 
-    if (
-      this.avatar &&
-      !this.avatar.destroyed &&
-      typeof this.avatar.waveHand === "function"
-    ) {
-      this.avatar.waveHand(delta);
+    // 2. Spawn and Animate Shooting Stars
+    if (Math.random() < 0.012 && this.shootingStars.length < 3) {
+      this.shootingStars.push({
+        x: Math.random() * rw * 0.8,
+        y: Math.random() * (floorY * 0.5),
+        length: 40 + Math.random() * 35,
+        vx: 380 + Math.random() * 200,
+        vy: 200 + Math.random() * 100,
+        alpha: 1.0,
+      });
+    }
+
+    if (this.shootingStarsGfx && !this.shootingStarsGfx.destroyed) {
+      this.shootingStarsGfx.clear();
+      for (let i = this.shootingStars.length - 1; i >= 0; i--) {
+        const ss = this.shootingStars[i];
+        ss.x += ss.vx * dt;
+        ss.y += ss.vy * dt;
+        ss.alpha -= 1.2 * dt;
+
+        if (ss.alpha <= 0.05) {
+          this.shootingStars.splice(i, 1);
+        } else {
+          this.shootingStarsGfx
+            .moveTo(ss.x, ss.y)
+            .lineTo(ss.x - ss.length, ss.y - ss.length * 0.5)
+            .stroke({ width: 1.8, color: 0xffffff, alpha: ss.alpha });
+        }
+      }
+    }
+
+    // 3. Rotating Armillary Astrolabe in 3D Motion
+    if (this.astrolabeCont && !this.astrolabeCont.destroyed) {
+      this.astrolabeCont.rotation = this.time * 0.8;
+      this.astrolabeCont.scale.x = Math.sin(this.time * 1.2);
+    }
+
+    // 4. Station Spring Physics
+    if (this.stations && Array.isArray(this.stations)) {
+      this.stations.forEach((st) => {
+        if (
+          st &&
+          st.spring &&
+          st.container &&
+          !st.container.destroyed &&
+          st.container.scale &&
+          typeof st.container.scale.set === "function"
+        ) {
+          const s = st.spring.update(dt);
+          st.container.scale.set(s);
+        }
+      });
     }
   }
 }

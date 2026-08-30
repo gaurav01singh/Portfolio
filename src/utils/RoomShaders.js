@@ -1,5 +1,6 @@
 import { Filter } from "pixi.js";
 
+// 1. SKILLS ROOM — Alpine Mountain Pass & Sunlight Shader
 export function createSkillsShader() {
   try {
     const fragment = `
@@ -12,20 +13,24 @@ export function createSkillsShader() {
       void main(void) {
         vec2 uv = vTextureCoord;
         
-        // Subtle plasma energy distortion
-        float wave = sin(uv.y * 18.0 + uTime * 2.5) * 0.0025 + cos(uv.x * 12.0 - uTime * 1.8) * 0.0025;
+        // Subtle alpine breeze wave ripple
+        float wave = sin(uv.y * 14.0 + uTime * 1.8) * 0.0012 + cos(uv.x * 10.0 - uTime * 1.4) * 0.0008;
         vec2 distUv = uv + vec2(wave, wave * 0.5);
         
         vec4 color = texture(uTexture, distUv);
         
-        // Cyberpunk energy pulse (cyan & gold tint)
-        float pulse = sin(uTime * 1.5 + (uv.x + uv.y) * 4.0) * 0.5 + 0.5;
-        vec3 energyGlow = vec3(0.0, 0.4, 0.6) * pulse * 0.12 * uIntensity;
+        // Mountain morning sunlight & amber warmth pulse
+        float pulse = sin(uTime * 1.0 + (uv.x + uv.y) * 2.5) * 0.5 + 0.5;
+        vec3 sunGlow = vec3(0.12, 0.08, 0.03) * pulse * 0.15 * uIntensity;
         
-        // Subtle horizontal energy scan flux
-        float scan = sin(uv.y * 220.0 + uTime * 6.0) * 0.03 * uIntensity;
+        // Subtle atmospheric starlight shimmer
+        float shimmer = sin(uv.x * 40.0 + uTime * 2.0) * sin(uv.y * 30.0 - uTime * 1.5) * 0.02 * (1.0 - uv.y);
         
-        finalColor = vec4(color.rgb + energyGlow + scan * color.rgb, color.a);
+        // Delicate vignette
+        vec2 center = uv - 0.5;
+        float vig = 1.0 - dot(center, center) * 0.22;
+        
+        finalColor = vec4((color.rgb + sunGlow + shimmer) * vig, color.a);
       }
     `;
 
@@ -41,12 +46,12 @@ export function createSkillsShader() {
 
     return filter;
   } catch (err) {
-    console.warn("Skills shader initialization fallback:", err);
+    console.warn("Skills mountain shader initialization fallback:", err);
     return null;
   }
 }
 
-// 2. EXPERIENCE ROOM — Holographic Laser Timeline Shader
+// 2. EXPERIENCE ROOM — Ocean Water Horizon & Tropical Caustics Shader
 export function createExperienceShader() {
   try {
     const fragment = `
@@ -58,20 +63,21 @@ export function createExperienceShader() {
       void main(void) {
         vec2 uv = vTextureCoord;
         
-        // Holographic horizontal raster lines
-        float scanline = sin(uv.y * 320.0 + uTime * 4.0) * 0.04;
+        // Ocean surface gentle heat and wave refractive ripple
+        float wave = sin(uv.y * 18.0 + uTime * 2.2) * 0.0015 + cos(uv.x * 14.0 - uTime * 1.5) * 0.001;
+        vec2 waterUv = uv + vec2(wave, wave * 0.5);
         
-        // Subtle RGB chromatic split
-        float r = texture(uTexture, uv + vec2(0.0018 * sin(uTime * 2.0), 0.0)).r;
-        float g = texture(uTexture, uv).g;
-        float b = texture(uTexture, uv - vec2(0.0018 * cos(uTime * 2.0), 0.0)).b;
-        float a = texture(uTexture, uv).a;
+        vec4 color = texture(uTexture, waterUv);
         
-        // Hologram laser shimmer
-        float beam = smoothstep(0.48, 0.52, sin(uv.y * 3.0 - uTime * 1.2) * 0.5 + 0.5) * 0.08;
-        vec3 holoTint = vec3(1.0, 0.35, 0.35) * beam;
+        // Tropical sunlight caustics and aquatic turquoise shimmer
+        float caustics = sin(uv.x * 35.0 + uTime * 2.5) * sin(uv.y * 25.0 - uTime * 1.8) * 0.035 * smoothstep(0.3, 0.8, uv.y);
+        vec3 sunGlow = vec3(0.04, 0.14, 0.2) * (sin(uTime * 1.2 + uv.x * 3.0) * 0.5 + 0.5) * 0.2;
         
-        finalColor = vec4(vec3(r, g, b) + scanline + holoTint, a);
+        // Soft vignette
+        vec2 center = uv - 0.5;
+        float vig = 1.0 - dot(center, center) * 0.2;
+        
+        finalColor = vec4((color.rgb + caustics + sunGlow) * vig, color.a);
       }
     `;
 
@@ -86,7 +92,7 @@ export function createExperienceShader() {
 
     return filter;
   } catch (err) {
-    console.warn("Experience shader fallback:", err);
+    console.warn("Experience ocean shader fallback:", err);
     return null;
   }
 }
@@ -133,7 +139,7 @@ export function createEducationShader() {
   }
 }
 
-// 4. PROJECTS ROOM — Retro CRT Phosphor Arcade Shader
+// 4. PROJECTS ROOM — Alpine Mountain Twilight Atmosphere Shader
 export function createProjectsShader() {
   try {
     const fragment = `
@@ -145,26 +151,24 @@ export function createProjectsShader() {
       void main(void) {
         vec2 uv = vTextureCoord;
         
-        // CRT screen subtle curvature warp
+        // Gentle mountain breeze / atmospheric heat ripple
+        float breeze = sin(uv.y * 14.0 + uTime * 1.6) * 0.0012 + cos(uv.x * 10.0 - uTime * 1.2) * 0.0008;
+        vec2 distUv = uv + vec2(breeze, breeze * 0.4);
+        
+        vec4 color = texture(uTexture, distUv);
+        
+        // Soft twilight mountain horizon ambient pulse (celestial blue & warm twilight peach)
+        float pulse = sin(uTime * 0.9 + (uv.y * 2.0)) * 0.5 + 0.5;
+        vec3 twilightGlow = vec3(0.05, 0.12, 0.22) * pulse * (1.0 - uv.y) * 0.25;
+        
+        // Soft subtle starlight & summit crest shimmer
+        float crestShimmer = sin(uv.x * 40.0 + uTime * 2.0) * sin(uv.y * 30.0 - uTime * 1.5) * 0.02 * (1.0 - uv.y);
+        
+        // Delicate atmospheric vignette
         vec2 center = uv - 0.5;
-        float dist = dot(center, center);
-        vec2 crtUv = uv + center * dist * 0.035;
+        float vig = 1.0 - dot(center, center) * 0.22;
         
-        // Subtle RGB shadow-mask separation
-        float r = texture(uTexture, crtUv + vec2(0.0012, 0.0)).r;
-        float g = texture(uTexture, crtUv).g;
-        float b = texture(uTexture, crtUv - vec2(0.0012, 0.0)).b;
-        float a = texture(uTexture, crtUv).a;
-        
-        // Rolling CRT cathode scanline beam
-        float scanline = sin(crtUv.y * 360.0 + uTime * 5.0) * 0.045;
-        
-        // Corner vignette
-        float vig = (1.0 - dist * 1.2);
-        
-        vec3 rgb = (vec3(r, g, b) + scanline) * max(0.65, vig);
-        
-        finalColor = vec4(rgb, a);
+        finalColor = vec4((color.rgb + twilightGlow + crestShimmer) * vig, color.a);
       }
     `;
 
@@ -179,12 +183,12 @@ export function createProjectsShader() {
 
     return filter;
   } catch (err) {
-    console.warn("Projects shader fallback:", err);
+    console.warn("Projects mountain shader fallback:", err);
     return null;
   }
 }
 
-// 5. ABOUT ROOM — Cinematic Warm Ambient Studio Shader
+// 5. ABOUT ROOM — Cosmic Stargazer Nebula & Starlight Shader
 export function createAboutShader() {
   try {
     const fragment = `
@@ -195,17 +199,25 @@ export function createAboutShader() {
 
       void main(void) {
         vec2 uv = vTextureCoord;
-        vec4 color = texture(uTexture, uv);
         
-        // Gentle warm amber studio ambient pulse
-        float glow = sin(uTime * 0.7 + uv.x * 2.0) * 0.5 + 0.5;
-        vec3 warmBloom = vec3(0.12, 0.08, 0.02) * glow;
+        // Interstellar cosmic gravitational wave distortion
+        float spaceWave = sin(uv.y * 12.0 + uTime * 1.5) * 0.0012 + cos(uv.x * 10.0 - uTime * 1.1) * 0.0008;
+        vec2 distUv = uv + vec2(spaceWave, spaceWave * 0.5);
         
-        // Film micro-vignette
+        vec4 color = texture(uTexture, distUv);
+        
+        // Deep space cosmic nebula pulse (starlight indigo & celestial violet)
+        float nebulaPulse = sin(uTime * 0.8 + (uv.x + uv.y) * 2.0) * 0.5 + 0.5;
+        vec3 nebulaGlow = vec3(0.04, 0.06, 0.16) * nebulaPulse * (1.0 - uv.y * 0.5);
+        
+        // Distant twinkling star field shimmer
+        float starShimmer = sin(uv.x * 60.0 + uTime * 3.0) * sin(uv.y * 50.0 - uTime * 2.0) * 0.025;
+        
+        // Soft cosmic vignette
         vec2 center = uv - 0.5;
-        float vig = 1.0 - dot(center, center) * 0.35;
+        float vig = 1.0 - dot(center, center) * 0.28;
         
-        finalColor = vec4((color.rgb + warmBloom) * vig, color.a);
+        finalColor = vec4((color.rgb + nebulaGlow + starShimmer) * vig, color.a);
       }
     `;
 
@@ -220,7 +232,7 @@ export function createAboutShader() {
 
     return filter;
   } catch (err) {
-    console.warn("About shader fallback:", err);
+    console.warn("About cosmic shader fallback:", err);
     return null;
   }
 }
