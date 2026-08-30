@@ -175,7 +175,6 @@ export class SkillsRoom extends Room {
       groupContainer.position.set(startX, currentY);
 
       // Category Header Milestone Signpost
-      const catColor = grp.color ?? 0xfacc15;
       const catHeader = new Container();
 
       // Category Milestone Plate
@@ -269,7 +268,9 @@ export class SkillsRoom extends Room {
 
         // Info hint icon
         const infoPip = new Graphics();
-        infoPip.circle(stoneW / 2 - 12, 0, 2.5).fill({ color: 0x94a3b8, alpha: 0.8 });
+        infoPip
+          .circle(stoneW / 2 - 12, 0, 2.5)
+          .fill({ color: 0x94a3b8, alpha: 0.8 });
 
         stoneCont.addChild(sShadow, sBg, nameTxt, infoPip);
 

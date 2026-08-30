@@ -952,8 +952,7 @@ export class ExperienceRoom extends Room {
 
         this.wavesGraphics.moveTo(0, wy);
         for (let wx = 0; wx < rw; wx += 25) {
-          const cy =
-            wy + Math.sin(this.time * waveSpeed + wx * 0.02) * waveAmp;
+          const cy = wy + Math.sin(this.time * waveSpeed + wx * 0.02) * waveAmp;
           this.wavesGraphics.lineTo(wx, cy);
         }
         this.wavesGraphics.stroke({
@@ -993,8 +992,7 @@ export class ExperienceRoom extends Room {
       this.seagulls.forEach((g) => {
         if (g.container && !g.container.destroyed) {
           g.container.x += g.vx * dt;
-          g.container.y =
-            g.baseY + Math.sin(this.time * 2.0 + g.seed) * 8;
+          g.container.y = g.baseY + Math.sin(this.time * 2.0 + g.seed) * 8;
           g.container.scale.y =
             0.7 + Math.sin(this.time * g.flapSpeed + g.seed) * 0.3;
 

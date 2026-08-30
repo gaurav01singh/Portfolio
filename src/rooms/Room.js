@@ -172,7 +172,7 @@ export class Room extends Container {
     this.uiLayer.addChild(this.exitBtn);
   }
 
-  buildRoom() { }
+  buildRoom() {}
 
   // Helper: Register an interactive prop / furniture with hover indicator & inspector
   addInteractiveProp(options) {

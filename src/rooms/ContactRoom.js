@@ -451,7 +451,8 @@ export class ContactRoom extends Room {
       {
         name: "LinkedIn",
         handle: "gaurav10singh",
-        url: PORTFOLIO.about.linkedin || "https://linkedin.com/in/gaurav10singh",
+        url:
+          PORTFOLIO.about.linkedin || "https://linkedin.com/in/gaurav10singh",
       },
     ];
 
