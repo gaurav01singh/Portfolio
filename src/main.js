@@ -177,12 +177,12 @@ import { assetManager } from "./assets/AssetManager";
     const bindTouchButton = (btn, onDown, onUp) => {
       if (!btn) return;
       const startHandler = (e) => {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         e.stopPropagation();
         onDown();
       };
       const endHandler = (e) => {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         e.stopPropagation();
         onUp();
       };
@@ -191,6 +191,10 @@ import { assetManager } from "./assets/AssetManager";
       btn.addEventListener("pointerup", endHandler);
       btn.addEventListener("pointercancel", endHandler);
       btn.addEventListener("pointerleave", endHandler);
+
+      btn.addEventListener("touchstart", startHandler, { passive: false });
+      btn.addEventListener("touchend", endHandler, { passive: false });
+      btn.addEventListener("touchcancel", endHandler, { passive: false });
     };
 
     if (world && world.player) {
@@ -235,8 +239,8 @@ import { assetManager } from "./assets/AssetManager";
 
       // Enter / Interact button
       if (touchEnter) {
-        touchEnter.addEventListener("pointerdown", (e) => {
-          e.preventDefault();
+        const handleEnter = (e) => {
+          if (e.cancelable) e.preventDefault();
           e.stopPropagation();
           if (
             world.nearbyBuilding &&
@@ -247,6 +251,10 @@ import { assetManager } from "./assets/AssetManager";
           } else if (world.roomManager.currentRoom) {
             world.roomManager.close();
           }
+        };
+        touchEnter.addEventListener("pointerdown", handleEnter);
+        touchEnter.addEventListener("touchstart", handleEnter, {
+          passive: false,
         });
       }
     }
@@ -255,7 +263,7 @@ import { assetManager } from "./assets/AssetManager";
     const teleportBtns = document.querySelectorAll(".teleport-btn");
     teleportBtns.forEach((btn) => {
       const handleTeleport = (e) => {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         e.stopPropagation();
         const targetId = btn.getAttribute("data-target");
         if (targetId && world) {
@@ -264,7 +272,7 @@ import { assetManager } from "./assets/AssetManager";
       };
 
       btn.addEventListener("click", handleTeleport);
-      btn.addEventListener("touchend", handleTeleport);
+      btn.addEventListener("touchend", handleTeleport, { passive: false });
     });
 
     updateProgress({
@@ -280,13 +288,18 @@ import { assetManager } from "./assets/AssetManager";
     if (enterBtn) {
       enterBtn.addEventListener("click", landOnPage);
       enterBtn.addEventListener("touchend", (e) => {
-        e.preventDefault();
+        if (e.cancelable) e.preventDefault();
         landOnPage();
       });
     }
 
     window.addEventListener("keydown", handleFirstKeyPress);
     window.addEventListener("pointerdown", handleFirstPointer);
+    window.addEventListener("touchstart", handleFirstPointer, {
+      passive: false,
+    });
+    window.addEventListener("resize", checkMobileControls);
+    checkMobileControls();
 
     // Smooth auto-transition into page after a short pleasant pause
     setTimeout(() => {

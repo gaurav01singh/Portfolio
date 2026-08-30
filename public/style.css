@@ -919,32 +919,38 @@ kbd {
    MOBILE ON-SCREEN TOUCH CONTROLS
    ========================================================= */
 .mobile-controls {
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1000;
+  z-index: 8000;
   display: none;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 24px;
-  padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
-  padding-left: max(24px, env(safe-area-inset-left, 24px));
-  padding-right: max(24px, env(safe-area-inset-right, 24px));
+  padding: 20px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  padding-left: max(20px, env(safe-area-inset-left, 20px));
+  padding-right: max(20px, env(safe-area-inset-right, 20px));
 }
 
 .mobile-controls.active {
   display: flex;
 }
 
+@media (max-width: 1024px), (pointer: coarse) {
+  .mobile-controls {
+    display: flex;
+  }
+}
+
 .mobile-dpad {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   pointer-events: auto;
 }
 
 .mobile-actions {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   pointer-events: auto;
 }
 
@@ -952,64 +958,71 @@ kbd {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(14, 21, 38, 0.78);
+  background: rgba(14, 21, 38, 0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 2px solid rgba(56, 189, 248, 0.45);
+  border: 2px solid #38bdf8;
   color: #ffffff;
   border-radius: 50%;
-  width: 62px;
-  height: 62px;
+  width: 58px;
+  height: 58px;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
   box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    0 4px 20px rgba(0, 0, 0, 0.7),
+    0 0 12px rgba(56, 189, 248, 0.35);
   transition:
     transform 0.1s ease,
     background-color 0.1s ease,
     border-color 0.1s ease;
 }
 
+.mobile-touch-btn svg {
+  fill: #ffffff;
+}
+
 .mobile-touch-btn:active {
-  transform: scale(0.92);
-  background: rgba(56, 189, 248, 0.35);
-  border-color: #38bdf8;
-  box-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
+  transform: scale(0.9);
+  background: #38bdf8;
+  border-color: #ffffff;
+}
+
+.mobile-touch-btn:active svg {
+  fill: #000000;
 }
 
 .mobile-touch-btn.action-btn {
-  border-radius: 16px;
-  width: 74px;
-  height: 58px;
+  border-radius: 14px;
+  width: 68px;
+  height: 54px;
   font-family: var(--font-display);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 900;
   letter-spacing: 1px;
 }
 
 .mobile-touch-btn.jump-action-btn {
-  background: rgba(16, 185, 129, 0.25);
-  border-color: rgba(16, 185, 129, 0.6);
-  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.35);
+  border-color: #10b981;
+  color: #ffffff;
 }
 
 .mobile-touch-btn.jump-action-btn:active {
-  background: rgba(16, 185, 129, 0.5);
-  border-color: #10b981;
+  background: #10b981;
+  color: #000000;
 }
 
 .mobile-touch-btn.enter-action-btn {
-  background: rgba(56, 189, 248, 0.25);
-  border-color: rgba(56, 189, 248, 0.6);
-  color: #7dd3fc;
+  background: rgba(56, 189, 248, 0.35);
+  border-color: #38bdf8;
+  color: #ffffff;
 }
 
 .mobile-touch-btn.enter-action-btn:active {
-  background: rgba(56, 189, 248, 0.5);
-  border-color: #38bdf8;
+  background: #38bdf8;
+  color: #000000;
 }
 
 /* Additional Mobile Screens Responsiveness */
@@ -1019,20 +1032,13 @@ kbd {
     height: 52px;
   }
   .mobile-touch-btn.action-btn {
-    width: 64px;
+    width: 60px;
     height: 48px;
-    font-size: 10.5px;
+    font-size: 10px;
   }
   .mobile-dpad,
   .mobile-actions {
     gap: 8px;
-  }
-  .loading-header .author-name {
-    font-size: 24px;
-    letter-spacing: 2px;
-  }
-  .loading-header .author-role {
-    font-size: 11px;
   }
   .controls-preview {
     display: none;
@@ -1043,28 +1049,29 @@ kbd {
    FAST-TRAVEL TELEPORT HUD NAVIGATION BAR
    ========================================================= */
 .teleport-nav {
-  position: absolute;
-  top: 18px;
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top, 14px));
   left: 50%;
   transform: translateX(-50%);
-  z-index: 900;
+  z-index: 5000;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: rgba(10, 16, 29, 0.82);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  gap: 8px;
+  background: rgba(10, 16, 29, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(71, 85, 105, 0.6);
   border-radius: 40px;
-  padding: 6px 14px 6px 12px;
+  padding: 6px 12px;
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.65),
+    0 8px 32px rgba(0, 0, 0, 0.75),
     inset 0 1px 1px rgba(255, 255, 255, 0.15);
   pointer-events: auto;
   user-select: none;
   -webkit-user-select: none;
-  max-width: 95vw;
+  max-width: 96vw;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
@@ -1118,7 +1125,7 @@ kbd {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(18, 26, 44, 0.75);
+  background: rgba(18, 26, 44, 0.85);
   border: 1px solid rgba(71, 85, 105, 0.5);
   border-radius: 24px;
   padding: 6px 12px;
@@ -1129,6 +1136,7 @@ kbd {
   letter-spacing: 0.5px;
   cursor: pointer;
   white-space: nowrap;
+  touch-action: manipulation;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1153,18 +1161,19 @@ kbd {
 
 @media (max-width: 768px) {
   .teleport-nav {
-    top: 10px;
-    padding: 5px 10px;
+    top: max(8px, env(safe-area-inset-top, 8px));
+    padding: 4px 8px;
     border-radius: 30px;
   }
   .teleport-badge {
     display: none;
   }
   .teleport-btn {
-    padding: 5px 9px;
+    padding: 5px 10px;
     font-size: 10px;
   }
   .teleport-btn .btn-text {
-    font-size: 9.5px;
+    font-size: 10px;
+    font-weight: 800;
   }
 }
