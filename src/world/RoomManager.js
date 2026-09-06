@@ -42,6 +42,7 @@ export class RoomManager {
     }
 
     this.currentRoom = room;
+    this.openTime = Date.now();
 
     // Pause player movement while modal room is active
     if (this.world && this.world.player) {
@@ -62,6 +63,11 @@ export class RoomManager {
 
   close() {
     if (!this.currentRoom || this.isTransitioning) return;
+
+    // Prevent immediate close race conditions from rapid touch/pointer events
+    if (Date.now() - (this.openTime || 0) < 450) {
+      return;
+    }
 
     this.isTransitioning = true;
     let isCleanedUp = false;

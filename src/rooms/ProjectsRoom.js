@@ -316,26 +316,32 @@ export class ProjectsRoom extends Room {
     const totalProjects = this.projects.length;
 
     const cols =
-      rw > 1050 && totalProjects >= 4
-        ? 2
-        : totalProjects <= 2
-          ? totalProjects
-          : 2;
+      rw >= 1400 && totalProjects >= 5
+        ? 3
+        : rw > 1050 && totalProjects >= 4
+          ? 2
+          : totalProjects <= 2
+            ? totalProjects
+            : 2;
 
-    const gridW = Math.min(rw * 0.92, 1020);
-    const colGap = 24;
+    const gridW =
+      cols === 3 ? Math.min(rw * 0.94, 1680) : Math.min(rw * 0.92, 1560);
+    const colGap = cols === 3 ? 24 : 36;
     const cardW = (gridW - (cols - 1) * colGap) / cols;
-    const cardH = 176;
-    const rowGap = 22;
+    const cardH = cols === 3 ? 255 : 260;
+    const rowGap = cols === 3 ? 24 : 28;
 
-    const startX = (rw - gridW) / 2 + cardW / 2;
-    const startY = 86 + cardH / 2;
+    const startY = 80 + cardH / 2;
 
     this.projects.forEach((proj, idx) => {
       const col = idx % cols;
       const row = Math.floor(idx / cols);
 
-      const mx = startX + col * (cardW + colGap);
+      const itemsInRow = Math.min(cols, totalProjects - row * cols);
+      const rowGridW = itemsInRow * cardW + (itemsInRow - 1) * colGap;
+      const rowStartX = (rw - rowGridW) / 2 + cardW / 2;
+
+      const mx = rowStartX + col * (cardW + colGap);
       const my = startY + row * (cardH + rowGap);
 
       const machCont = new Container();
@@ -357,10 +363,10 @@ export class ProjectsRoom extends Room {
       // ==========================================
       // LEFT SIDE: OBSERVATORY LENS / THUMBNAIL
       // ==========================================
-      const screenW = Math.min(142, cardW * 0.35);
-      const screenH = cardH - 28;
-      const screenX = -cardW / 2 + 14;
-      const screenY = -cardH / 2 + 14;
+      const screenW = cols === 3 ? 210 : 240;
+      const screenH = cardH - 32;
+      const screenX = -cardW / 2 + 16;
+      const screenY = -cardH / 2 + 16;
 
       const screenFrame = new Graphics()
         .roundRect(screenX, screenY, screenW, screenH, 10)
@@ -376,20 +382,58 @@ export class ProjectsRoom extends Room {
       const projThumbSrc =
         proj.thumbnail || `./assets/projects/${proj.id}-1.jpg`;
       const tex =
-        Assets.get(`proj_${proj.id}_1`) ||
         Assets.get(projThumbSrc) ||
+        Assets.get(`proj_${proj.id}_1`) ||
         Assets.get("home");
 
       const imgSprite = new Sprite(tex);
-      imgSprite.position.set(screenX, screenY);
-      imgSprite.width = screenW;
-      imgSprite.height = screenH;
 
-      if (!Assets.get(`proj_${proj.id}_1`) && !Assets.get(projThumbSrc)) {
+      // Sizing helper: object-fit: scale-down (preserves aspect ratio, never scales up beyond natural size)
+      const applyScaleDown = (sprite, texture) => {
+        if (!sprite || !texture) return;
+        const tw =
+          texture.orig?.width ||
+          texture.width ||
+          texture.source?.width ||
+          screenW;
+        const th =
+          texture.orig?.height ||
+          texture.height ||
+          texture.source?.height ||
+          screenH;
+        if (tw <= 1 || th <= 1) return;
+
+        const scale = Math.min(1, screenW / tw, screenH / th);
+        const fitW = tw * scale;
+        const fitH = th * scale;
+
+        sprite.width = fitW;
+        sprite.height = fitH;
+        sprite.position.set(
+          screenX + (screenW - fitW) / 2,
+          screenY + (screenH - fitH) / 2,
+        );
+      };
+
+      if (tex) {
+        applyScaleDown(imgSprite, tex);
+        if (
+          tex.source &&
+          !tex.source.isLoaded &&
+          typeof tex.source.on === "function"
+        ) {
+          tex.source.on("loaded", () => {
+            applyScaleDown(imgSprite, tex);
+          });
+        }
+      }
+
+      if (!Assets.get(projThumbSrc) && !Assets.get(`proj_${proj.id}_1`)) {
         Assets.load(projThumbSrc)
           .then((loadedTex) => {
             if (loadedTex && !this.destroyed && imgSprite) {
               imgSprite.texture = loadedTex;
+              applyScaleDown(imgSprite, loadedTex);
             }
           })
           .catch(() => {});
@@ -398,8 +442,8 @@ export class ProjectsRoom extends Room {
       // Classic Lens Sheen (Top-left corner light reflection)
       const lensSheen = new Graphics()
         .moveTo(screenX, screenY)
-        .lineTo(screenX + 38, screenY)
-        .lineTo(screenX, screenY + 48)
+        .lineTo(screenX + 54, screenY)
+        .lineTo(screenX, screenY + 64)
         .closePath()
         .fill({ color: 0xffffff, alpha: 0.12 });
 
@@ -409,10 +453,10 @@ export class ProjectsRoom extends Room {
       // Classic Monochrome Photo Badge
       const photoCount = proj.images?.length || 3;
       const photoBadge = new Container();
-      photoBadge.position.set(screenX + 4, screenY + screenH - 22);
+      photoBadge.position.set(screenX + 8, screenY + screenH - 32);
 
       const pbBg = new Graphics()
-        .roundRect(0, 0, screenW - 8, 18, 5)
+        .roundRect(0, 0, screenW - 16, 24, 6)
         .fill({ color: 0x080d14, alpha: 0.92 })
         .stroke({ width: 1, color: 0x475569, alpha: 0.75 });
 
@@ -420,38 +464,44 @@ export class ProjectsRoom extends Room {
         text: `${photoCount} SCREENSHOTS ↗`,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 8.5,
+          fontSize: 11.5,
           fontWeight: "900",
           fill: 0xe2e8f0,
-          letterSpacing: 0.5,
+          letterSpacing: 0.6,
         },
       });
       pbTxt.anchor.set(0.5);
-      pbTxt.position.set((screenW - 8) / 2, 9);
+      pbTxt.position.set((screenW - 16) / 2, 12);
       photoBadge.addChild(pbBg, pbTxt);
 
       // ==========================================
       // RIGHT SIDE: TITLE, ENGINE, TAGS & BUTTONS
       // ==========================================
-      const rightX = screenX + screenW + 16;
-      const rightW = cardW - (rightX - -cardW / 2) - 16;
+      const rightX = screenX + screenW + (cols === 3 ? 18 : 24);
+      const rightW = cardW - (rightX - -cardW / 2) - (cols === 3 ? 16 : 20);
 
       const tagTxt = new Text({
         text: `${proj.engine} · ${proj.type}`,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 9.5,
+          fontSize: cols === 3 ? 11.5 : 13,
           fontWeight: "800",
           fill: 0xe2e8f0,
-          letterSpacing: 0.5,
+          letterSpacing: 0.6,
         },
       });
-      tagTxt.position.set(rightX + 8, -cardH / 2 + 18);
+      tagTxt.position.set(rightX + 8, -cardH / 2 + (cols === 3 ? 16 : 20));
 
       // Classic Neutral Slate Pill Tag
       const tagW = Math.min(tagTxt.width + 16, rightW);
       const tagBg = new Graphics()
-        .roundRect(rightX, -cardH / 2 + 14, tagW, 22, 6)
+        .roundRect(
+          rightX,
+          -cardH / 2 + (cols === 3 ? 13 : 16),
+          tagW,
+          cols === 3 ? 23 : 26,
+          6,
+        )
         .fill({ color: 0x1e293b, alpha: 0.75 })
         .stroke({ width: 1, color: 0x475569, alpha: 0.7 });
 
@@ -460,33 +510,35 @@ export class ProjectsRoom extends Room {
         text: proj.title,
         style: {
           fontFamily: "system-ui, -apple-system, sans-serif",
-          fontSize: 15,
+          fontSize: cols === 3 ? 18.5 : 22,
           fontWeight: "900",
           fill: 0xffffff,
-          letterSpacing: 0.3,
+          letterSpacing: 0.4,
           wordWrap: true,
           wordWrapWidth: rightW,
         },
       });
-      titleTxt.position.set(rightX, -cardH / 2 + 42);
+      titleTxt.position.set(rightX, -cardH / 2 + (cols === 3 ? 44 : 54));
 
       // Bullet Preview (Starlight Silver Mist)
+      const previewY = titleTxt.height > 30 ? -cardH / 2 + 96 : -cardH / 2 + 76;
       const previewTxt = new Text({
-        text: proj.bullets[0] ?? "",
+        text: proj.bullets?.[0] ?? "",
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 11,
-          fill: 0x94a3b8,
-          lineHeight: 15.5,
+          fontSize: cols === 3 ? 13 : 14.5,
+          fill: 0xd1d5db,
+          lineHeight: cols === 3 ? 18 : 21,
           wordWrap: true,
           wordWrapWidth: rightW,
         },
       });
-      previewTxt.position.set(rightX, -cardH / 2 + 68);
+      previewTxt.position.set(rightX, cols === 3 ? previewY : -cardH / 2 + 90);
 
       // Action Buttons Container
+      const btnH = cols === 3 ? 34 : 38;
       const btnRow = new Container();
-      btnRow.position.set(rightX, cardH / 2 - 34);
+      btnRow.position.set(rightX, cardH / 2 - (btnH + 10));
 
       // Button 1: VIEW DETAILS & GALLERY (Classic Frosted Charcoal & Silver)
       const viewBtn = new Container();
@@ -494,7 +546,7 @@ export class ProjectsRoom extends Room {
       viewBtn.cursor = "pointer";
 
       const vBg = new Graphics()
-        .roundRect(0, 0, proj.link ? rightW * 0.48 : rightW, 28, 6)
+        .roundRect(0, 0, proj.link ? rightW * 0.48 : rightW, btnH, 8)
         .fill(0x161e2e)
         .stroke({ width: 1.5, color: 0x475569 });
 
@@ -502,20 +554,20 @@ export class ProjectsRoom extends Room {
         text: "EXPLORE ↗",
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 10,
+          fontSize: cols === 3 ? 12 : 13,
           fontWeight: "900",
           fill: 0xffffff,
-          letterSpacing: 0.5,
+          letterSpacing: 0.6,
         },
       });
       vTxt.anchor.set(0.5);
-      vTxt.position.set((proj.link ? rightW * 0.48 : rightW) / 2, 14);
+      vTxt.position.set((proj.link ? rightW * 0.48 : rightW) / 2, btnH / 2);
       viewBtn.addChild(vBg, vTxt);
 
       viewBtn.on("pointerover", () => {
         vBg
           .clear()
-          .roundRect(0, 0, proj.link ? rightW * 0.48 : rightW, 28, 6)
+          .roundRect(0, 0, proj.link ? rightW * 0.48 : rightW, btnH, 8)
           .fill(0x263348)
           .stroke({ width: 1.5, color: 0xffffff });
       });
@@ -523,7 +575,7 @@ export class ProjectsRoom extends Room {
       viewBtn.on("pointerout", () => {
         vBg
           .clear()
-          .roundRect(0, 0, proj.link ? rightW * 0.48 : rightW, 28, 6)
+          .roundRect(0, 0, proj.link ? rightW * 0.48 : rightW, btnH, 8)
           .fill(0x161e2e)
           .stroke({ width: 1.5, color: 0x475569 });
       });
@@ -542,34 +594,34 @@ export class ProjectsRoom extends Room {
         linkBtn.cursor = "pointer";
 
         const lBg = new Graphics()
-          .roundRect(0, 0, rightW * 0.48, 28, 6)
+          .roundRect(0, 0, rightW * 0.48, btnH, 8)
           .fill(0xffffff);
 
         const lTxt = new Text({
           text: "OPEN LINK ↗",
           style: {
             fontFamily: "system-ui, sans-serif",
-            fontSize: 10,
+            fontSize: cols === 3 ? 12 : 13,
             fontWeight: "900",
             fill: 0x090d16,
-            letterSpacing: 0.5,
+            letterSpacing: 0.6,
           },
         });
         lTxt.anchor.set(0.5);
-        lTxt.position.set((rightW * 0.48) / 2, 14);
+        lTxt.position.set((rightW * 0.48) / 2, btnH / 2);
         linkBtn.addChild(lBg, lTxt);
 
         linkBtn.on("pointerover", () => {
           lBg
             .clear()
-            .roundRect(0, 0, rightW * 0.48, 28, 6)
+            .roundRect(0, 0, rightW * 0.48, btnH, 8)
             .fill(0xe2e8f0);
         });
 
         linkBtn.on("pointerout", () => {
           lBg
             .clear()
-            .roundRect(0, 0, rightW * 0.48, 28, 6)
+            .roundRect(0, 0, rightW * 0.48, btnH, 8)
             .fill(0xffffff);
         });
 

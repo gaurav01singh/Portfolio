@@ -313,12 +313,12 @@ export class ExperienceRoom extends Room {
 
     const cols = totalExp <= 3 ? totalExp : rw > 1100 ? 3 : 2;
 
-    const gridW = Math.min(rw * 0.92, 1080);
-    const colGap = 28;
+    const gridW = Math.min(rw * 0.92, 1560);
+    const colGap = 36;
     const cellW = (gridW - (cols - 1) * colGap) / cols;
-    const stationW = Math.min(340, cellW);
-    const stationH = 225;
-    const rowGap = 28;
+    const stationW = Math.min(500, cellW);
+    const stationH = 320;
+    const rowGap = 32;
 
     const startX = (rw - gridW) / 2 + stationW / 2;
     const startY = 88 + stationH / 2;
@@ -352,25 +352,25 @@ export class ExperienceRoom extends Room {
 
       // Status Pill
       const statusPill = new Container();
-      statusPill.position.set(-stationW / 2 + 16, -stationH / 2 + 16);
+      statusPill.position.set(-stationW / 2 + 20, -stationH / 2 + 20);
 
       const statusTxt = new Text({
         text: exp.status,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 9.5,
+          fontSize: 12.5,
           fontWeight: "800",
           fill: 0xe2e8f0,
-          letterSpacing: 0.6,
+          letterSpacing: 0.7,
         },
       });
-      statusTxt.position.set(8, 4);
+      statusTxt.position.set(10, 5);
 
-      const pillW = Math.min(statusTxt.width + 16, stationW - 32);
+      const pillW = Math.min(statusTxt.width + 20, stationW - 40);
       const spBg = new Graphics()
-        .roundRect(0, 0, pillW, 22, 6)
-        .fill({ color: 0x1e293b, alpha: 0.8 })
-        .stroke({ width: 1, color: 0x475569, alpha: 0.75 });
+        .roundRect(0, 0, pillW, 26, 6)
+        .fill({ color: 0x1e293b, alpha: 0.85 })
+        .stroke({ width: 1.2, color: 0x475569, alpha: 0.85 });
 
       statusPill.addChild(spBg, statusTxt);
 
@@ -379,57 +379,57 @@ export class ExperienceRoom extends Room {
         text: exp.role,
         style: {
           fontFamily: "system-ui, -apple-system, sans-serif",
-          fontSize: 15,
+          fontSize: 21,
           fontWeight: "900",
           fill: 0xffffff,
-          letterSpacing: 0.3,
+          letterSpacing: 0.4,
           wordWrap: true,
-          wordWrapWidth: stationW - 32,
+          wordWrapWidth: stationW - 40,
         },
       });
-      roleTxt.position.set(-stationW / 2 + 16, -stationH / 2 + 46);
+      roleTxt.position.set(-stationW / 2 + 20, -stationH / 2 + 56);
 
       // Company & Tech (Classic Snowcap / Silver)
       const compTxt = new Text({
         text: exp.company,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 12.5,
+          fontSize: 16,
           fontWeight: "700",
-          fill: 0xe2e8f0,
+          fill: 0x38bdf8,
         },
       });
-      compTxt.position.set(-stationW / 2 + 16, -stationH / 2 + 70);
+      compTxt.position.set(-stationW / 2 + 20, -stationH / 2 + 90);
 
       // Period (Neutral Slate Starlight)
       const dateTxt = new Text({
         text: exp.period,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 11.5,
+          fontSize: 13.5,
           fontWeight: "600",
           fill: 0x94a3b8,
         },
       });
-      dateTxt.position.set(-stationW / 2 + 16, -stationH / 2 + 90);
+      dateTxt.position.set(-stationW / 2 + 20, -stationH / 2 + 116);
 
       // Bullet Preview
       const previewTxt = new Text({
         text: exp.bullets[0] ?? "",
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 11,
-          fill: 0x94a3b8,
-          lineHeight: 15.5,
+          fontSize: 14,
+          fill: 0xd1d5db,
+          lineHeight: 20,
           wordWrap: true,
-          wordWrapWidth: stationW - 32,
+          wordWrapWidth: stationW - 40,
         },
       });
-      previewTxt.position.set(-stationW / 2 + 16, -stationH / 2 + 114);
+      previewTxt.position.set(-stationW / 2 + 20, -stationH / 2 + 148);
 
       // Inspect Call to Action
       const ctaBg = new Graphics()
-        .roundRect(-stationW / 2 + 16, stationH / 2 - 38, stationW - 32, 28, 6)
+        .roundRect(-stationW / 2 + 20, stationH / 2 - 46, stationW - 40, 36, 8)
         .fill(0x161e2e)
         .stroke({ width: 1.5, color: 0x475569 });
 
@@ -437,14 +437,14 @@ export class ExperienceRoom extends Room {
         text: "EXPLORE DOSSIER ↗",
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 10,
+          fontSize: 13,
           fontWeight: "900",
           fill: 0xffffff,
-          letterSpacing: 0.6,
+          letterSpacing: 0.8,
         },
       });
       ctaTxt.anchor.set(0.5);
-      ctaTxt.position.set(0, stationH / 2 - 24);
+      ctaTxt.position.set(0, stationH / 2 - 28);
 
       stationCont.addChild(
         sShadow,
@@ -464,11 +464,11 @@ export class ExperienceRoom extends Room {
         ctaBg
           .clear()
           .roundRect(
-            -stationW / 2 + 16,
-            stationH / 2 - 38,
-            stationW - 32,
-            28,
-            6,
+            -stationW / 2 + 20,
+            stationH / 2 - 46,
+            stationW - 40,
+            36,
+            8,
           )
           .fill(0x263348)
           .stroke({ width: 1.5, color: 0xffffff });
@@ -480,11 +480,11 @@ export class ExperienceRoom extends Room {
         ctaBg
           .clear()
           .roundRect(
-            -stationW / 2 + 16,
-            stationH / 2 - 38,
-            stationW - 32,
-            28,
-            6,
+            -stationW / 2 + 20,
+            stationH / 2 - 46,
+            stationW - 40,
+            36,
+            8,
           )
           .fill(0x161e2e)
           .stroke({ width: 1.5, color: 0x475569 });
@@ -802,7 +802,7 @@ export class ExperienceRoom extends Room {
       text: exp.role,
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 17,
+        fontSize: 24,
         fontWeight: "900",
         fill: 0xffffff,
       },
@@ -813,58 +813,58 @@ export class ExperienceRoom extends Room {
       text: `${exp.company}  ·  ${exp.period}`,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: "800",
-        fill: 0x94a3b8,
+        fill: 0x38bdf8,
         letterSpacing: 0.5,
       },
     });
-    comp.position.set(0, 24);
+    comp.position.set(0, 32);
 
-    let by = 54;
+    let by = 68;
     exp.bullets.forEach((b) => {
       const bCont = new Container();
       bCont.position.set(0, by);
 
-      const dot = new Graphics().circle(6, 8, 3).fill(0x94a3b8);
+      const dot = new Graphics().circle(6, 10, 3.5).fill(0x38bdf8);
 
       const bTxt = new Text({
         text: b,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 13,
+          fontSize: 15,
           fill: 0xd0d7de,
-          lineHeight: 19,
+          lineHeight: 22,
           wordWrap: true,
-          wordWrapWidth: 490,
+          wordWrapWidth: 680,
         },
       });
-      bTxt.position.set(18, 0);
+      bTxt.position.set(20, 0);
 
       bCont.addChild(dot, bTxt);
       c.addChild(bCont);
-      by += bTxt.height + 10;
+      by += bTxt.height + 12;
     });
 
     const stackTxt = new Text({
       text: "TECH STACK: " + exp.stack.join("  •  "),
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
+        fontSize: 14,
         fontWeight: "900",
         fill: 0xffffff,
       },
     });
-    stackTxt.position.set(0, by + 8);
+    stackTxt.position.set(0, by + 12);
     c.addChild(stackTxt);
 
     this.showInspector({
       title: `${exp.company} Career Dossier`,
       icon: "",
       color: 0xffffff,
-      width: 550,
-      x: (this.roomWidth - 550) / 2,
-      y: 80,
+      width: 760,
+      x: (this.roomWidth - 760) / 2,
+      y: 60,
       content: c,
     });
   }

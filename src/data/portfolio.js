@@ -402,6 +402,52 @@ export const PORTFOLIO = {
         link: "https://drive.google.com/file/d/1Ppux3KMu1sIIGbDCrNfjpsIw1LQ0oIpW/view",
       },
       {
+        id: "procedural-modular-dungeon-generator",
+        title: "Procedural Modular Dungeon Generator",
+        engine: "UNITY",
+        type: "PROCEDURAL 3D",
+        color: 0x06b6d4,
+        thumbnail: "./assets/projects/DungeonGenerator-2.png",
+        images: [
+          {
+            url: "./assets/projects/DungeonGenerator-1.png",
+            title: "Command Hub & Terminal Interior",
+            desc: "Specialized modular room placement featuring interior workstations, control terminals, and branching doorway connections.",
+          },
+          {
+            url: "./assets/projects/DungeonGenerator-2.png",
+            title: "Atmospheric Corridor Lighting & Architecture",
+            desc: "Emissive lighting bands, modular structural framing, and room transition thresholds maintained across dynamically generated paths.",
+          },
+          {
+            url: "./assets/projects/DungeonGenerator-3.png",
+            title: "Sci-Fi Corridor Traversal & Navigation",
+            desc: "Third-person character traversal through seamlessly connected modular corridor sections, octagonal bulkheads, and atmospheric windows.",
+          },
+          {
+            url: "./assets/projects/DungeonGenerator-4.png",
+            title: "Modular Dungeon Layout & Generation Graph",
+            desc: "Top-down 3D scene view of dynamically connected modular rooms and corridors generated via connection points, collision checking, and end caps.",
+          },
+        ],
+        bullets: [
+          "Developed a procedural dungeon generation system in Unity using C# to assemble connected layouts dynamically from modular rooms and corridors.",
+          "Implemented connection-point based assembly, weighted module selection, and collision/overlap validation to prevent invalid room placements.",
+          "Engineered an intelligent backtracking system that removes blocked modules and explores alternative paths when generation gets stuck.",
+          "Built seed-based generation, room constraints, final room and end-cap placement, and interactive debug visualization for generation steps.",
+        ],
+        stack: [
+          "Unity",
+          "C#",
+          "Procedural Generation",
+          "Backtracking",
+          "Modular Level Design",
+          "Collision Validation",
+          "Seed Generation",
+        ],
+        link: "https://youtu.be/7esCA1aaDPA",
+      },
+      {
         id: "tutorial",
         title: "Tutorial Haven",
         engine: "MERN",
@@ -480,6 +526,14 @@ export const PORTFOLIO = {
       },
     ],
     html: `
+      <div class="job">
+        <div class="job-meta">Procedural Modular Dungeon Generator (Unity)</div>
+        <ul>
+          <li>Developed a procedural dungeon generation system in Unity using C# to dynamically assemble modular rooms and corridors.</li>
+          <li>Implemented connection-point based generation, weighted module selection, collision/overlap validation, and backtracking to handle failed generation paths.</li>
+          <li>Created seed-based generation, room constraints, final room and end-cap placement, and real-time generation visualization/debugging.</li>
+        </ul>
+      </div>
       <div class="job">
         <div class="job-meta">Flappy Bird Clone (Unity)</div>
         <ul>

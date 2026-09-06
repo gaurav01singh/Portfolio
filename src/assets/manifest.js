@@ -28,6 +28,10 @@ export const manifest = {
           src: "./assets/projects/tutorial-1.jpg",
         },
         {
+          alias: "proj_procedural-modular-dungeon-generator_1",
+          src: "./assets/projects/DungeonGenerator-1.png",
+        },
+        {
           alias: "proj_ecommerce_1",
           src: "./assets/projects/ecommerce-1.jpg",
         },

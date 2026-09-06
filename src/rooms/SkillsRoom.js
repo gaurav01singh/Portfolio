@@ -182,42 +182,42 @@ export class SkillsRoom extends Room {
         text: `${grp.category.toUpperCase()}:`,
         style: {
           fontFamily: "system-ui, -apple-system, sans-serif",
-          fontSize: 13,
+          fontSize: 16.5,
           fontWeight: "900",
           fill: 0xffffff,
           letterSpacing: 1.2,
         },
       });
-      catTxt.position.set(22, 5);
+      catTxt.position.set(28, 6);
 
       const catBadge = new Graphics();
       // Classic Silver Pip
       catBadge
-        .moveTo(6, 12)
-        .lineTo(12, 6)
-        .lineTo(18, 12)
-        .lineTo(12, 18)
+        .moveTo(8, 16)
+        .lineTo(15, 9)
+        .lineTo(22, 16)
+        .lineTo(15, 23)
         .closePath()
         .fill(0xffffff);
 
-      const headerW = catTxt.width + 36;
+      const headerW = catTxt.width + 44;
       const headerBg = new Graphics()
-        .roundRect(0, 0, headerW, 26, 6)
-        .fill({ color: 0x0f172a, alpha: 0.85 })
-        .stroke({ width: 1.5, color: 0x475569, alpha: 0.85 });
+        .roundRect(0, 0, headerW, 34, 8)
+        .fill({ color: 0x0f172a, alpha: 0.88 })
+        .stroke({ width: 1.5, color: 0x475569, alpha: 0.9 });
 
       catHeader.addChild(headerBg, catBadge, catTxt);
       groupContainer.addChild(catHeader);
 
       // Skill Stones for this Category
       const stonesContainer = new Container();
-      stonesContainer.position.set(0, 34);
+      stonesContainer.position.set(0, 44);
 
       let stoneX = 0;
       let stoneY = 0;
-      const stoneH = 42;
-      const stoneGapX = 12;
-      const stoneGapY = 10;
+      const stoneH = 54;
+      const stoneGapX = 16;
+      const stoneGapY = 14;
 
       grp.nodes.forEach((node) => {
         // Measure stone width based on skill name
@@ -225,11 +225,11 @@ export class SkillsRoom extends Room {
           text: node.name,
           style: {
             fontFamily: "system-ui, -apple-system, sans-serif",
-            fontSize: 12.5,
+            fontSize: 15.5,
             fontWeight: "800",
           },
         });
-        const stoneW = Math.max(120, tempName.width + 42);
+        const stoneW = Math.max(140, tempName.width + 54);
 
         // Wrap to next line if stone overflows
         if (stoneX + stoneW > contentW && stoneX > 0) {
@@ -246,8 +246,8 @@ export class SkillsRoom extends Room {
 
         // Stone Drop Shadow
         const sShadow = new Graphics()
-          .roundRect(-stoneW / 2 + 3, -stoneH / 2 + 4, stoneW, stoneH, 8)
-          .fill({ color: 0x000000, alpha: 0.6 });
+          .roundRect(-stoneW / 2 + 3, -stoneH / 2 + 5, stoneW, stoneH, 10)
+          .fill({ color: 0x000000, alpha: 0.65 });
 
         // Sculpted 0.5 Alpha Mountain Stone Body
         const sBg = new Graphics();
@@ -258,19 +258,19 @@ export class SkillsRoom extends Room {
           text: node.name,
           style: {
             fontFamily: "system-ui, -apple-system, sans-serif",
-            fontSize: 12,
+            fontSize: 15.5,
             fontWeight: "800",
             fill: 0xffffff,
-            letterSpacing: 0.3,
+            letterSpacing: 0.4,
           },
         });
-        nameTxt.position.set(-stoneW / 2 + 20, -7);
+        nameTxt.position.set(-stoneW / 2 + 24, -9);
 
         // Info hint icon
         const infoPip = new Graphics();
         infoPip
-          .circle(stoneW / 2 - 12, 0, 2.5)
-          .fill({ color: 0x94a3b8, alpha: 0.8 });
+          .circle(stoneW / 2 - 14, 0, 3.5)
+          .fill({ color: 0x94a3b8, alpha: 0.85 });
 
         stoneCont.addChild(sShadow, sBg, nameTxt, infoPip);
 
@@ -306,7 +306,7 @@ export class SkillsRoom extends Room {
       groupContainer.addChild(stonesContainer);
       this.furnitureLayer.addChild(groupContainer);
 
-      currentY += 40 + stoneY + stoneH + 18;
+      currentY += 48 + stoneY + stoneH + 18;
     });
 
     // Ambient Mountain Breeze Particles
@@ -526,7 +526,7 @@ export class SkillsRoom extends Room {
       text: node.name,
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: "900",
         fill: 0xffffff,
         letterSpacing: 0.5,
@@ -538,26 +538,26 @@ export class SkillsRoom extends Room {
       text: `CATEGORY: ${category.toUpperCase()}`,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11,
+        fontSize: 14,
         fontWeight: "900",
-        fill: 0x94a3b8,
+        fill: 0x38bdf8,
         letterSpacing: 0.8,
       },
     });
-    cat.position.set(0, 26);
+    cat.position.set(0, 32);
 
     const desc = new Text({
       text: node.desc || "Technical mastery and practical implementation.",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 13,
+        fontSize: 16,
         fill: 0xd1d5db,
-        lineHeight: 20,
+        lineHeight: 24,
         wordWrap: true,
-        wordWrapWidth: 480,
+        wordWrapWidth: 680,
       },
     });
-    desc.position.set(0, 56);
+    desc.position.set(0, 68);
 
     c.addChild(title, cat, desc);
 
@@ -565,9 +565,9 @@ export class SkillsRoom extends Room {
       title: `${node.name} · Skill Stone`,
       icon: "",
       color: 0xffffff,
-      width: 520,
-      x: (this.roomWidth - 520) / 2,
-      y: 100,
+      width: 760,
+      x: (this.roomWidth - 760) / 2,
+      y: 80,
       content: c,
     });
   }

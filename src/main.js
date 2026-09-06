@@ -17,9 +17,40 @@ import { assetManager } from "./assets/AssetManager";
   const enterBtn = document.getElementById("enter-btn");
   const pixiContainer = document.getElementById("pixi-container");
   const mobileControls = document.getElementById("mobile-controls");
+  const rotateOverlay = document.getElementById("rotate-device-overlay");
+  const rotateDismissBtn = document.getElementById("rotate-dismiss-btn");
 
   let currentPercent = 0;
   let isLanded = false;
+  let isRotateDismissed = false;
+
+  const checkOrientationPrompt = () => {
+    if (!rotateOverlay) return;
+
+    // Detect if device is a phone / mobile in portrait mode
+    const isMobileDevice =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.innerWidth <= 850;
+
+    const isPortrait = window.innerHeight > window.innerWidth;
+
+    if (isMobileDevice && isPortrait && !isRotateDismissed) {
+      rotateOverlay.classList.add("active");
+    } else {
+      rotateOverlay.classList.remove("active");
+    }
+  };
+
+  if (rotateDismissBtn) {
+    rotateDismissBtn.addEventListener("click", () => {
+      isRotateDismissed = true;
+      if (rotateOverlay) {
+        rotateOverlay.classList.remove("active");
+      }
+    });
+  }
 
   const updateProgress = ({ percent, status }) => {
     currentPercent = Math.max(currentPercent, percent);
@@ -131,13 +162,29 @@ import { assetManager } from "./assets/AssetManager";
       }
 
       checkMobileControls();
+      checkOrientationPrompt();
     };
 
-    window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("orientationchange", () => {
-      setTimeout(resizeCanvas, 150);
+    window.addEventListener("resize", () => {
+      resizeCanvas();
+      checkOrientationPrompt();
     });
+    window.addEventListener("orientationchange", () => {
+      setTimeout(() => {
+        resizeCanvas();
+        checkOrientationPrompt();
+      }, 150);
+    });
+    if (window.screen && window.screen.orientation) {
+      window.screen.orientation.addEventListener("change", () => {
+        setTimeout(() => {
+          resizeCanvas();
+          checkOrientationPrompt();
+        }, 150);
+      });
+    }
     resizeCanvas();
+    checkOrientationPrompt();
 
     updateProgress({
       percent: 25,
@@ -239,23 +286,45 @@ import { assetManager } from "./assets/AssetManager";
 
       // Enter / Interact button
       if (touchEnter) {
+        let lastEnterTapTime = 0;
+
         const handleEnter = (e) => {
           if (e.cancelable) e.preventDefault();
           e.stopPropagation();
-          if (
-            world.nearbyBuilding &&
-            !world.roomManager.currentRoom &&
-            world.player.canControl
-          ) {
-            world.openRoomById(world.nearbyBuilding.data.id);
-          } else if (world.roomManager.currentRoom) {
+
+          const now = Date.now();
+          if (now - lastEnterTapTime < 450) {
+            return;
+          }
+          lastEnterTapTime = now;
+
+          // If a room is currently open, this button acts as EXIT
+          if (world.roomManager && world.roomManager.currentRoom) {
             world.roomManager.close();
+            return;
+          }
+
+          // Otherwise, enter the nearby building
+          const targetBuilding =
+            world.nearbyBuilding ||
+            (world.getNearestBuilding ? world.getNearestBuilding(240) : null);
+
+          if (targetBuilding) {
+            world.openRoomById(targetBuilding.data.id);
+          } else {
+            // Visual feedback if player is not close enough to any building
+            touchEnter.classList.add("shake-hint");
+            setTimeout(() => {
+              touchEnter.classList.remove("shake-hint");
+            }, 350);
           }
         };
+
         touchEnter.addEventListener("pointerdown", handleEnter);
         touchEnter.addEventListener("touchstart", handleEnter, {
           passive: false,
         });
+        touchEnter.addEventListener("click", handleEnter);
       }
     }
 

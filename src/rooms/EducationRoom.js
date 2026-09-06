@@ -69,8 +69,8 @@ export class EducationRoom extends Room {
 
     this.foregroundLayer.addChild(floor);
 
-    const degW = Math.min(320, rw * 0.34);
-    const degH = 220;
+    const degW = 480;
+    const degH = 320;
     const degX = degCenterX;
     const degY = degCenterY;
 
@@ -83,7 +83,7 @@ export class EducationRoom extends Room {
 
     const dShadow = new Graphics()
       .roundRect(-degW / 2 + 8, -degH / 2 + 10, degW, degH, 16)
-      .fill({ color: 0x000000, alpha: 0.6 });
+      .fill({ color: 0x000000, alpha: 0.65 });
 
     const dBg = new Graphics()
       .roundRect(-degW / 2, -degH / 2, degW, degH, 16)
@@ -98,45 +98,45 @@ export class EducationRoom extends Room {
       text: "B.TECH IN COMPUTER SCIENCE\n& ENGINEERING",
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 14,
+        fontSize: 20,
         fontWeight: "900",
         fill: 0xffffff,
         align: "center",
-        lineHeight: 19,
+        lineHeight: 26,
       },
     });
     dTitle.anchor.set(0.5);
-    dTitle.position.set(0, -degH / 2 + 48);
+    dTitle.position.set(0, -degH / 2 + 54);
 
     const dUni = new Text({
       text: "Dr. A.P.J Abdul Kalam Technical Univ.",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: "700",
         fill: 0x9775fa,
       },
     });
     dUni.anchor.set(0.5);
-    dUni.position.set(0, -degH / 2 + 90);
+    dUni.position.set(0, -degH / 2 + 116);
 
     const dPeriod = new Text({
       text: "2021 — 2025 · Graduated",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
+        fontSize: 14,
         fill: 0xabbcd5,
       },
     });
     dPeriod.anchor.set(0.5);
-    dPeriod.position.set(0, -degH / 2 + 114);
+    dPeriod.position.set(0, -degH / 2 + 146);
 
     // CGPA Highlight Metric Chip
     const cgpaBox = new Container();
-    cgpaBox.position.set(0, degH / 2 - 28);
+    cgpaBox.position.set(0, degH / 2 - 38);
 
     const cBg = new Graphics()
-      .roundRect(-85, -14, 170, 28, 8)
+      .roundRect(-105, -18, 210, 36, 10)
       .fill(0x231a3d)
       .stroke({ width: 1.5, color: 0xfacc15 });
 
@@ -144,7 +144,7 @@ export class EducationRoom extends Room {
       text: "CGPA: 7.0 / 10.0",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12,
+        fontSize: 15,
         fontWeight: "900",
         fill: 0xfacc15,
       },
@@ -185,9 +185,9 @@ export class EducationRoom extends Room {
     this.degreeObject = { container: degCont, spring: degSpring };
 
     // 2. FLOATING CS COURSEWORK ARCHIVE (Left)
-    const courseW = Math.min(270, rw * 0.28);
-    const courseH = 185;
-    const courseX = rw * 0.18;
+    const courseW = 440;
+    const courseH = 320;
+    const courseX = rw * 0.19;
     const courseY = degY;
 
     const courseCont = new Container();
@@ -199,7 +199,7 @@ export class EducationRoom extends Room {
 
     const cwShadow = new Graphics()
       .roundRect(-courseW / 2 + 6, -courseH / 2 + 8, courseW, courseH, 14)
-      .fill({ color: 0x000000, alpha: 0.6 });
+      .fill({ color: 0x000000, alpha: 0.65 });
 
     const cwBg = new Graphics()
       .roundRect(-courseW / 2, -courseH / 2, courseW, courseH, 14)
@@ -207,56 +207,56 @@ export class EducationRoom extends Room {
       .stroke({ width: 2.5, color: 0xfacc15 });
 
     const cwStripe = new Graphics()
-      .roundRect(-courseW / 2, -courseH / 2, courseW, 5, 2)
+      .roundRect(-courseW / 2, -courseH / 2, courseW, 6, 2.5)
       .fill(0xfacc15);
 
     const cwHead = new Text({
       text: "CS COURSEWORK",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12.5,
+        fontSize: 16,
         fontWeight: "900",
         fill: 0xfacc15,
         letterSpacing: 1,
       },
     });
-    cwHead.position.set(-courseW / 2 + 14, -courseH / 2 + 14);
+    cwHead.position.set(-courseW / 2 + 18, -courseH / 2 + 18);
 
     courseCont.addChild(cwShadow, cwBg, cwStripe, cwHead);
 
-    let cy = -courseH / 2 + 40;
+    let cy = -courseH / 2 + 54;
     this.coursework.slice(0, 4).forEach((cw) => {
       const row = new Container();
-      row.position.set(-courseW / 2 + 14, cy);
+      row.position.set(-courseW / 2 + 18, cy);
 
-      const dot = new Graphics().circle(4, 7, 3).fill(0xfacc15);
+      const dot = new Graphics().circle(5, 9, 3.5).fill(0xfacc15);
 
       const rTxt = new Text({
         text: cw.name,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 11.5,
+          fontSize: 14.5,
           fontWeight: "700",
           fill: 0xffffff,
         },
       });
-      rTxt.position.set(12, 0);
+      rTxt.position.set(16, 0);
 
       row.addChild(dot, rTxt);
       courseCont.addChild(row);
-      cy += 24;
+      cy += 38;
     });
 
     const cwCta = new Text({
       text: "CLICK TO VIEW ALL (6)",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 10.5,
+        fontSize: 13,
         fontWeight: "900",
         fill: 0xfacc15,
       },
     });
-    cwCta.position.set(-courseW / 2 + 14, courseH / 2 - 24);
+    cwCta.position.set(-courseW / 2 + 18, courseH / 2 - 30);
     courseCont.addChild(cwCta);
 
     courseCont.on("pointerover", () => {
@@ -273,9 +273,9 @@ export class EducationRoom extends Room {
     this.courseObject = { container: courseCont, spring: courseSpring };
 
     // 3. FLOATING CERTIFICATES VAULT (Right)
-    const certW = Math.min(270, rw * 0.28);
-    const certH = 185;
-    const certX = rw * 0.82;
+    const certW = 440;
+    const certH = 320;
+    const certX = rw * 0.81;
     const certY = degY;
 
     const certCont = new Container();
@@ -287,7 +287,7 @@ export class EducationRoom extends Room {
 
     const ctShadow = new Graphics()
       .roundRect(-certW / 2 + 6, -certH / 2 + 8, certW, certH, 14)
-      .fill({ color: 0x000000, alpha: 0.6 });
+      .fill({ color: 0x000000, alpha: 0.65 });
 
     const ctBg = new Graphics()
       .roundRect(-certW / 2, -certH / 2, certW, certH, 14)
@@ -295,33 +295,33 @@ export class EducationRoom extends Room {
       .stroke({ width: 2.5, color: 0x38bdf8 });
 
     const ctStripe = new Graphics()
-      .roundRect(-certW / 2, -certH / 2, certW, 5, 2)
+      .roundRect(-certW / 2, -certH / 2, certW, 6, 2.5)
       .fill(0x38bdf8);
 
     const ctHead = new Text({
       text: "VERIFIED CERTIFICATES",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12.5,
+        fontSize: 16,
         fontWeight: "900",
         fill: 0x38bdf8,
         letterSpacing: 1,
       },
     });
-    ctHead.position.set(-certW / 2 + 14, -certH / 2 + 14);
+    ctHead.position.set(-certW / 2 + 18, -certH / 2 + 18);
 
     certCont.addChild(ctShadow, ctBg, ctStripe, ctHead);
 
-    let rcy = -certH / 2 + 40;
+    let rcy = -certH / 2 + 54;
     this.certificates.forEach((cert) => {
       const cRow = new Container();
-      cRow.position.set(-certW / 2 + 14, rcy);
+      cRow.position.set(-certW / 2 + 18, rcy);
 
       const nTxt = new Text({
         text: cert.title,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 12,
+          fontSize: 14.5,
           fontWeight: "800",
           fill: 0xffffff,
         },
@@ -331,28 +331,28 @@ export class EducationRoom extends Room {
         text: `${cert.issuer} · ${cert.period}`,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 10.5,
+          fontSize: 13,
           fontWeight: "600",
           fill: cert.color,
         },
       });
-      sTxt.position.set(0, 18);
+      sTxt.position.set(0, 22);
 
       cRow.addChild(nTxt, sTxt);
       certCont.addChild(cRow);
-      rcy += 44;
+      rcy += 56;
     });
 
     const ctCta = new Text({
       text: "CLICK TO VIEW DETAILS",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 10.5,
+        fontSize: 13,
         fontWeight: "900",
         fill: 0x38bdf8,
       },
     });
-    ctCta.position.set(-certW / 2 + 14, certH / 2 - 24);
+    ctCta.position.set(-certW / 2 + 18, certH / 2 - 30);
     certCont.addChild(ctCta);
 
     certCont.on("pointerover", () => {
@@ -376,7 +376,7 @@ export class EducationRoom extends Room {
       text: "B.Tech in Computer Science & Engineering",
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 17.5,
+        fontSize: 24,
         fontWeight: "900",
         fill: 0x9775fa,
       },
@@ -387,36 +387,36 @@ export class EducationRoom extends Room {
       text: "Dr. A.P.J Abdul Kalam Technical University (AKTU)",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 13.5,
+        fontSize: 16.5,
         fontWeight: "bold",
         fill: 0xfacc15,
       },
     });
-    uni.position.set(0, 26);
+    uni.position.set(0, 34);
 
     const meta = new Text({
       text: "Oct 2021 – Jun 2025  ·  Cumulative Academic Score: CGPA 7.0 / 10.0",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12.5,
+        fontSize: 14.5,
         fontWeight: "600",
         fill: 0xffffff,
       },
     });
-    meta.position.set(0, 52);
+    meta.position.set(0, 68);
 
     const desc = new Text({
       text: "Comprehensive 4-year engineering curriculum focused on Object-Oriented Programming, Data Structures & Algorithms, Database Architecture, and Operating Systems.\n\nGraduated in 2025 with strong problem-solving skills, deep game engine physics understanding, and real-time interactive development experience.",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 13,
+        fontSize: 15,
         fill: 0xd0d7de,
-        lineHeight: 19,
+        lineHeight: 22,
         wordWrap: true,
-        wordWrapWidth: 500,
+        wordWrapWidth: 680,
       },
     });
-    desc.position.set(0, 80);
+    desc.position.set(0, 102);
 
     c.addChild(title, uni, meta, desc);
 
@@ -424,9 +424,9 @@ export class EducationRoom extends Room {
       title: "University Degree Dossier",
       icon: "",
       color: 0x9775fa,
-      width: 550,
-      x: (this.roomWidth - 550) / 2,
-      y: 80,
+      width: 760,
+      x: (this.roomWidth - 760) / 2,
+      y: 60,
       content: c,
     });
   }
@@ -438,14 +438,14 @@ export class EducationRoom extends Room {
       text: "Core Computer Science Disciplines",
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 17,
+        fontSize: 24,
         fontWeight: "900",
         fill: 0xfacc15,
       },
     });
     title.position.set(0, 0);
 
-    let cy = 30;
+    let cy = 36;
     this.coursework.forEach((cw) => {
       const row = new Container();
       row.position.set(0, cy);
@@ -454,7 +454,7 @@ export class EducationRoom extends Room {
         text: cw.name,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 13,
+          fontSize: 15.5,
           fontWeight: "bold",
           fill: 0xffffff,
         },
@@ -464,27 +464,27 @@ export class EducationRoom extends Room {
         text: cw.desc,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 12,
+          fontSize: 14,
           fill: 0x94a3b8,
-          lineHeight: 16,
+          lineHeight: 20,
           wordWrap: true,
-          wordWrapWidth: 500,
+          wordWrapWidth: 680,
         },
       });
-      dTxt.position.set(0, 18);
+      dTxt.position.set(0, 22);
 
       row.addChild(nTxt, dTxt);
       c.addChild(row);
-      cy += 46;
+      cy += 54;
     });
 
     this.showInspector({
       title: "CS Disciplines Archive",
       icon: "",
       color: 0xfacc15,
-      width: 550,
-      x: (this.roomWidth - 550) / 2,
-      y: 80,
+      width: 760,
+      x: (this.roomWidth - 760) / 2,
+      y: 60,
       content: c,
     });
   }
@@ -496,14 +496,14 @@ export class EducationRoom extends Room {
       text: "Verified Industry Training & Internships",
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 17,
+        fontSize: 24,
         fontWeight: "900",
         fill: 0x38bdf8,
       },
     });
     title.position.set(0, 0);
 
-    let cy = 30;
+    let cy = 36;
     this.certificates.forEach((cert) => {
       const row = new Container();
       row.position.set(0, cy);
@@ -512,7 +512,7 @@ export class EducationRoom extends Room {
         text: `${cert.title} — ${cert.issuer}`,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 13.5,
+          fontSize: 16,
           fontWeight: "bold",
           fill: cert.color,
         },
@@ -522,38 +522,38 @@ export class EducationRoom extends Room {
         text: cert.period,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 11.5,
+          fontSize: 13.5,
           fontWeight: "600",
           fill: 0xfacc15,
         },
       });
-      pTxt.position.set(0, 20);
+      pTxt.position.set(0, 24);
 
       const dTxt = new Text({
         text: cert.desc,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 12.5,
+          fontSize: 14.5,
           fill: 0xd0d7de,
-          lineHeight: 18,
+          lineHeight: 21,
           wordWrap: true,
-          wordWrapWidth: 500,
+          wordWrapWidth: 680,
         },
       });
-      dTxt.position.set(0, 40);
+      dTxt.position.set(0, 48);
 
       row.addChild(nTxt, pTxt, dTxt);
       c.addChild(row);
-      cy += 90;
+      cy += 105;
     });
 
     this.showInspector({
       title: "Verified Credentials Showcase",
       icon: "",
       color: 0x38bdf8,
-      width: 550,
-      x: (this.roomWidth - 550) / 2,
-      y: 80,
+      width: 760,
+      x: (this.roomWidth - 760) / 2,
+      y: 60,
       content: c,
     });
   }

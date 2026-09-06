@@ -175,17 +175,18 @@ export class AboutRoom extends Room {
     // ============================================
     // 3. THREE FROSTED OBSIDIAN DOSSIER STATIONS (FROM PORTFOLIO.JS)
     // ============================================
-    const stationW = Math.min(360, (rw - 120) / 3);
-    const stationH = 340;
-    const startX = (rw - (stationW * 3 + 40)) / 2 + stationW / 2;
-    const cardY = 82 + stationH / 2;
+    const stationW = Math.min(500, (rw - 140) / 3);
+    const stationH = 460;
+    const stationGap = 32;
+    const startX = (rw - (stationW * 3 + stationGap * 2)) / 2 + stationW / 2;
+    const cardY = 86 + stationH / 2;
 
     // --- Station 1: VOYAGER BIOGRAPHY (Left) ---
     this.createVoyagerStation(startX, cardY, stationW, stationH);
 
     // --- Station 2: CAREER & EDUCATION HIGHLIGHTS (Center) ---
     this.createMetricsStation(
-      startX + stationW + 20,
+      startX + stationW + stationGap,
       cardY,
       stationW,
       stationH,
@@ -193,7 +194,7 @@ export class AboutRoom extends Room {
 
     // --- Station 3: DEV MANTRAS & CHANNELS (Right) ---
     this.createPhilosophyStation(
-      startX + (stationW + 20) * 2,
+      startX + (stationW + stationGap) * 2,
       cardY,
       stationW,
       stationH,
@@ -222,21 +223,21 @@ export class AboutRoom extends Room {
       text: PORTFOLIO.about.eyebrow || "DEVELOPER PROFILE",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 9,
+        fontSize: 12.5,
         fontWeight: "900",
         fill: 0xe2e8f0,
-        letterSpacing: 0.8,
+        letterSpacing: 0.9,
       },
     });
-    badgeTxt.position.set(8, 4);
+    badgeTxt.position.set(10, 5);
 
     const bBg = new Graphics()
-      .roundRect(0, 0, badgeTxt.width + 16, 22, 6)
-      .fill({ color: 0x1e293b, alpha: 0.8 })
-      .stroke({ width: 1, color: 0x475569, alpha: 0.8 });
+      .roundRect(0, 0, badgeTxt.width + 20, 26, 6)
+      .fill({ color: 0x1e293b, alpha: 0.85 })
+      .stroke({ width: 1.2, color: 0x475569, alpha: 0.85 });
 
     const badgeCont = new Container();
-    badgeCont.position.set(-w / 2 + 16, -h / 2 + 16);
+    badgeCont.position.set(-w / 2 + 18, -h / 2 + 18);
     badgeCont.addChild(bBg, badgeTxt);
 
     // Name & Title (From PORTFOLIO.about)
@@ -244,45 +245,45 @@ export class AboutRoom extends Room {
       text: PORTFOLIO.about.fullName,
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 16,
+        fontSize: 22,
         fontWeight: "900",
         fill: 0xffffff,
         letterSpacing: 0.6,
       },
     });
-    nameTxt.position.set(-w / 2 + 16, -h / 2 + 48);
+    nameTxt.position.set(-w / 2 + 18, -h / 2 + 54);
 
     const roleTxt = new Text({
       text: `${PORTFOLIO.about.role} · ${PORTFOLIO.about.location}`,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
+        fontSize: 14.5,
         fontWeight: "700",
         fill: 0x94a3b8,
-        lineHeight: 16,
+        lineHeight: 20,
         wordWrap: true,
-        wordWrapWidth: w - 32,
+        wordWrapWidth: w - 36,
       },
     });
-    roleTxt.position.set(-w / 2 + 16, -h / 2 + 74);
+    roleTxt.position.set(-w / 2 + 18, -h / 2 + 86);
 
     // Summary Text (From PORTFOLIO.about.summary)
     const summaryTxt = new Text({
       text: PORTFOLIO.about.summary,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11,
+        fontSize: 14,
         fill: 0xd1d5db,
-        lineHeight: 16.5,
+        lineHeight: 21,
         wordWrap: true,
-        wordWrapWidth: w - 32,
+        wordWrapWidth: w - 36,
       },
     });
-    summaryTxt.position.set(-w / 2 + 16, -h / 2 + 116);
+    summaryTxt.position.set(-w / 2 + 18, -h / 2 + 138);
 
     // Action Button
     const ctaBg = new Graphics()
-      .roundRect(-w / 2 + 16, h / 2 - 38, w - 32, 28, 6)
+      .roundRect(-w / 2 + 18, h / 2 - 46, w - 36, 36, 8)
       .fill(0x161e2e)
       .stroke({ width: 1.5, color: 0x475569 });
 
@@ -290,14 +291,14 @@ export class AboutRoom extends Room {
       text: "EXPLORE FULL DOSSIER ↗",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 10,
+        fontSize: 13,
         fontWeight: "900",
         fill: 0xffffff,
-        letterSpacing: 0.6,
+        letterSpacing: 0.8,
       },
     });
     ctaTxt.anchor.set(0.5);
-    ctaTxt.position.set(0, h / 2 - 24);
+    ctaTxt.position.set(0, h / 2 - 28);
 
     cont.addChild(
       shadow,
@@ -352,21 +353,21 @@ export class AboutRoom extends Room {
       text: PORTFOLIO.education.eyebrow || "EXPEDITION HIGHLIGHTS",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 9,
+        fontSize: 12.5,
         fontWeight: "900",
         fill: 0xe2e8f0,
-        letterSpacing: 0.8,
+        letterSpacing: 0.9,
       },
     });
-    badgeTxt.position.set(8, 4);
+    badgeTxt.position.set(10, 5);
 
     const bBg = new Graphics()
-      .roundRect(0, 0, badgeTxt.width + 16, 22, 6)
-      .fill({ color: 0x1e293b, alpha: 0.8 })
-      .stroke({ width: 1, color: 0x475569, alpha: 0.8 });
+      .roundRect(0, 0, badgeTxt.width + 20, 26, 6)
+      .fill({ color: 0x1e293b, alpha: 0.85 })
+      .stroke({ width: 1.2, color: 0x475569, alpha: 0.85 });
 
     const badgeCont = new Container();
-    badgeCont.position.set(-w / 2 + 16, -h / 2 + 16);
+    badgeCont.position.set(-w / 2 + 18, -h / 2 + 18);
     badgeCont.addChild(bBg, badgeTxt);
 
     // Dynamic metrics pulled 100% from PORTFOLIO
@@ -401,47 +402,47 @@ export class AboutRoom extends Room {
     ];
 
     const metricsCont = new Container();
-    metricsCont.position.set(-w / 2 + 16, -h / 2 + 48);
+    metricsCont.position.set(-w / 2 + 18, -h / 2 + 54);
 
     metrics.forEach((m, idx) => {
-      const my = idx * 60;
+      const my = idx * 76;
 
       const mBg = new Graphics()
-        .roundRect(0, my, w - 32, 50, 8)
-        .fill({ color: 0x0f172a, alpha: 0.6 })
-        .stroke({ width: 1, color: 0x334155, alpha: 0.7 });
+        .roundRect(0, my, w - 36, 64, 8)
+        .fill({ color: 0x0f172a, alpha: 0.65 })
+        .stroke({ width: 1.2, color: 0x334155, alpha: 0.75 });
 
       const numTxt = new Text({
         text: m.num,
         style: {
           fontFamily: "system-ui, -apple-system, sans-serif",
-          fontSize: 13.5,
+          fontSize: 16.5,
           fontWeight: "900",
           fill: 0xffffff,
           letterSpacing: 0.5,
         },
       });
-      numTxt.position.set(12, my + 8);
+      numTxt.position.set(14, my + 10);
 
       const labelTxt = new Text({
         text: m.label,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 10,
+          fontSize: 13,
           fontWeight: "600",
           fill: 0x94a3b8,
           wordWrap: true,
-          wordWrapWidth: w - 60,
+          wordWrapWidth: w - 64,
         },
       });
-      labelTxt.position.set(12, my + 28);
+      labelTxt.position.set(14, my + 34);
 
       metricsCont.addChild(mBg, numTxt, labelTxt);
     });
 
     // Action Button
     const ctaBg = new Graphics()
-      .roundRect(-w / 2 + 16, h / 2 - 38, w - 32, 28, 6)
+      .roundRect(-w / 2 + 18, h / 2 - 46, w - 36, 36, 8)
       .fill(0x161e2e)
       .stroke({ width: 1.5, color: 0x475569 });
 
@@ -449,14 +450,14 @@ export class AboutRoom extends Room {
       text: "VIEW CREDENTIALS ↗",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 10,
+        fontSize: 13,
         fontWeight: "900",
         fill: 0xffffff,
-        letterSpacing: 0.6,
+        letterSpacing: 0.8,
       },
     });
     ctaTxt.anchor.set(0.5);
-    ctaTxt.position.set(0, h / 2 - 24);
+    ctaTxt.position.set(0, h / 2 - 28);
 
     cont.addChild(shadow, bg, badgeCont, metricsCont, ctaBg, ctaTxt);
 
@@ -502,67 +503,67 @@ export class AboutRoom extends Room {
       text: PORTFOLIO.experience.eyebrow || "DEVELOPER MANTRAS & LINKS",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 9,
+        fontSize: 12.5,
         fontWeight: "900",
         fill: 0xe2e8f0,
-        letterSpacing: 0.8,
+        letterSpacing: 0.9,
       },
     });
-    badgeTxt.position.set(8, 4);
+    badgeTxt.position.set(10, 5);
 
     const bBg = new Graphics()
-      .roundRect(0, 0, badgeTxt.width + 16, 22, 6)
-      .fill({ color: 0x1e293b, alpha: 0.8 })
-      .stroke({ width: 1, color: 0x475569, alpha: 0.8 });
+      .roundRect(0, 0, badgeTxt.width + 20, 26, 6)
+      .fill({ color: 0x1e293b, alpha: 0.85 })
+      .stroke({ width: 1.2, color: 0x475569, alpha: 0.85 });
 
     const badgeCont = new Container();
-    badgeCont.position.set(-w / 2 + 16, -h / 2 + 16);
+    badgeCont.position.set(-w / 2 + 18, -h / 2 + 18);
     badgeCont.addChild(bBg, badgeTxt);
 
     // Quotes directly from PORTFOLIO.about.quotes
     const quotes = PORTFOLIO.about.quotes || [];
     const quotesCont = new Container();
-    quotesCont.position.set(-w / 2 + 16, -h / 2 + 48);
+    quotesCont.position.set(-w / 2 + 18, -h / 2 + 54);
 
     quotes.slice(0, 3).forEach((quote, idx) => {
-      const qy = idx * 62;
+      const qy = idx * 98;
 
       const qBg = new Graphics()
-        .roundRect(0, qy, w - 32, 54, 8)
-        .fill({ color: 0x0f172a, alpha: 0.6 })
-        .stroke({ width: 1, color: 0x334155, alpha: 0.7 });
+        .roundRect(0, qy, w - 36, 84, 8)
+        .fill({ color: 0x0f172a, alpha: 0.65 })
+        .stroke({ width: 1.2, color: 0x334155, alpha: 0.75 });
 
       const qTitle = new Text({
         text: `MANTRA 0${idx + 1}`,
         style: {
           fontFamily: "system-ui, -apple-system, sans-serif",
-          fontSize: 10,
+          fontSize: 13,
           fontWeight: "900",
           fill: 0xffffff,
-          letterSpacing: 0.5,
+          letterSpacing: 0.6,
         },
       });
-      qTitle.position.set(10, qy + 7);
+      qTitle.position.set(14, qy + 10);
 
       const qDesc = new Text({
         text: `"${quote}"`,
         style: {
           fontFamily: "system-ui, sans-serif",
-          fontSize: 10,
-          fill: 0x94a3b8,
-          lineHeight: 14,
+          fontSize: 13.5,
+          fill: 0xd1d5db,
+          lineHeight: 19,
           wordWrap: true,
-          wordWrapWidth: w - 52,
+          wordWrapWidth: w - 60,
         },
       });
-      qDesc.position.set(10, qy + 24);
+      qDesc.position.set(14, qy + 32);
 
       quotesCont.addChild(qBg, qTitle, qDesc);
     });
 
     // Action Button
     const ctaBg = new Graphics()
-      .roundRect(-w / 2 + 16, h / 2 - 38, w - 32, 28, 6)
+      .roundRect(-w / 2 + 18, h / 2 - 46, w - 36, 36, 8)
       .fill(0x161e2e)
       .stroke({ width: 1.5, color: 0x475569 });
 
@@ -570,14 +571,14 @@ export class AboutRoom extends Room {
       text: "OPEN CONTACT & LINKS ↗",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 10,
+        fontSize: 13,
         fontWeight: "900",
         fill: 0xffffff,
-        letterSpacing: 0.6,
+        letterSpacing: 0.8,
       },
     });
     ctaTxt.anchor.set(0.5);
-    ctaTxt.position.set(0, h / 2 - 24);
+    ctaTxt.position.set(0, h / 2 - 28);
 
     cont.addChild(shadow, bg, badgeCont, quotesCont, ctaBg, ctaTxt);
 
@@ -718,7 +719,7 @@ export class AboutRoom extends Room {
       text: PORTFOLIO.about.fullName,
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 18,
+        fontSize: 24,
         fontWeight: "900",
         fill: 0xffffff,
         letterSpacing: 0.6,
@@ -730,49 +731,49 @@ export class AboutRoom extends Room {
       text: `${PORTFOLIO.about.role} · ${PORTFOLIO.about.location}`,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11,
+        fontSize: 15.5,
         fontWeight: "800",
         fill: 0x94a3b8,
         letterSpacing: 0.8,
       },
     });
-    role.position.set(0, 26);
+    role.position.set(0, 34);
 
     const summaryTxt = new Text({
       text: PORTFOLIO.about.summary,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12.5,
+        fontSize: 15,
         fill: 0xd1d5db,
-        lineHeight: 19,
+        lineHeight: 23,
         wordWrap: true,
-        wordWrapWidth: 490,
+        wordWrapWidth: 680,
       },
     });
-    summaryTxt.position.set(0, 52);
+    summaryTxt.position.set(0, 68);
 
     const contactHeader = new Text({
       text: "CONTACT & CHANNELS",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11,
+        fontSize: 14,
         fontWeight: "900",
         fill: 0xffffff,
         letterSpacing: 0.8,
       },
     });
-    contactHeader.position.set(0, summaryTxt.y + summaryTxt.height + 14);
+    contactHeader.position.set(0, summaryTxt.y + summaryTxt.height + 20);
 
     const contactLinks = new Text({
       text: `GitHub: ${PORTFOLIO.about.github}\nLinkedIn: ${PORTFOLIO.about.linkedin}\nEmail: ${PORTFOLIO.about.email}\nPhone: ${PORTFOLIO.about.phone}`,
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 12,
+        fontSize: 14,
         fill: 0x94a3b8,
-        lineHeight: 18,
+        lineHeight: 22,
       },
     });
-    contactLinks.position.set(0, contactHeader.y + 22);
+    contactLinks.position.set(0, contactHeader.y + 26);
 
     c.addChild(title, role, summaryTxt, contactHeader, contactLinks);
 
@@ -780,9 +781,9 @@ export class AboutRoom extends Room {
       title: `${PORTFOLIO.about.title} · ${PORTFOLIO.about.fullName}`,
       icon: "",
       color: 0xffffff,
-      width: 550,
-      x: (this.roomWidth - 550) / 2,
-      y: 70,
+      width: 760,
+      x: (this.roomWidth - 760) / 2,
+      y: 60,
       content: c,
     });
   }

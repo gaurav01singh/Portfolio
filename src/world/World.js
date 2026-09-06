@@ -133,6 +133,15 @@ export class World extends Container {
     this.promptText.anchor.set(0.5);
 
     this.promptContainer.addChild(promptBg, this.promptText);
+    this.promptContainer.eventMode = "static";
+    this.promptContainer.cursor = "pointer";
+    this.promptContainer.on("pointertap", (e) => {
+      if (e?.stopPropagation) e.stopPropagation();
+      const target = this.nearbyBuilding || this.getNearestBuilding(240);
+      if (target && !this.roomManager.currentRoom) {
+        this.openRoomById(target.data.id);
+      }
+    });
     this.gameLayer.addChild(this.promptContainer);
 
     // Keyboard interaction for 'E' / 'Enter' to open nearby room
@@ -143,8 +152,11 @@ export class World extends Container {
         e.key === "E" ||
         e.code === "Enter"
       ) {
-        if (!this.roomManager.currentRoom && this.nearbyBuilding) {
-          this.openRoomById(this.nearbyBuilding.data.id);
+        if (!this.roomManager.currentRoom) {
+          const target = this.nearbyBuilding || this.getNearestBuilding(240);
+          if (target) {
+            this.openRoomById(target.data.id);
+          }
         }
       }
     });
@@ -251,19 +263,51 @@ export class World extends Container {
     this.checkProximity(delta);
   }
 
-  checkProximity(delta) {
-    if (this.roomManager.currentRoom) {
-      this.promptContainer.visible = false;
-      this.nearbyBuilding = null;
-      return;
-    }
-
+  getNearestBuilding(maxDist = 240) {
+    if (this.nearbyBuilding) return this.nearbyBuilding;
     let closest = null;
-    let minDist = 130; // Proximity radius
-
+    let minDist = maxDist;
     for (const building of this.portfolioBuildings) {
       const dist = Math.abs(this.player.x - building.x);
       if (dist < minDist) {
+        closest = building;
+        minDist = dist;
+      }
+    }
+    return closest;
+  }
+
+  checkProximity(delta) {
+    const enterBtn =
+      typeof document !== "undefined"
+        ? document.getElementById("touch-enter")
+        : null;
+
+    if (this.roomManager.currentRoom) {
+      this.promptContainer.visible = false;
+      this.nearbyBuilding = null;
+      if (enterBtn) {
+        enterBtn.classList.remove("can-enter");
+        enterBtn.classList.add("is-exit");
+        const span = enterBtn.querySelector("span");
+        if (span && span.textContent !== "EXIT") {
+          span.textContent = "EXIT";
+        }
+      }
+      return;
+    }
+
+    if (enterBtn) {
+      enterBtn.classList.remove("is-exit");
+    }
+
+    let closest = null;
+    let minDist = 220; // Generous proximity radius for mobile touch controls & walking
+
+    for (const building of this.portfolioBuildings) {
+      const threshold = Math.max(185, (building.data.w || 240) * 0.75);
+      const dist = Math.abs(this.player.x - building.x);
+      if (dist < threshold && dist < minDist) {
         closest = building;
         minDist = dist;
       }
@@ -272,7 +316,7 @@ export class World extends Container {
     this.nearbyBuilding = closest;
 
     if (closest) {
-      this.promptText.text = `Press [E] or Click to Enter ${closest.data.label}`;
+      this.promptText.text = `Press [E] or Tap to Enter ${closest.data.label}`;
       this.promptContainer.position.set(
         closest.x,
         this.groundY - closest.data.h - 60,
@@ -285,10 +329,25 @@ export class World extends Container {
       const t = performance.now() * 0.005;
       this.promptContainer.y =
         this.groundY - closest.data.h - 60 + Math.sin(t) * 3;
+
+      if (enterBtn) {
+        enterBtn.classList.add("can-enter");
+        const span = enterBtn.querySelector("span");
+        if (span && span.textContent !== "ENTER") {
+          span.textContent = "ENTER";
+        }
+      }
     } else {
       this.promptContainer.alpha -= 0.2 * delta;
       if (this.promptContainer.alpha <= 0.05) {
         this.promptContainer.visible = false;
+      }
+      if (enterBtn) {
+        enterBtn.classList.remove("can-enter");
+        const span = enterBtn.querySelector("span");
+        if (span && span.textContent !== "ENTER") {
+          span.textContent = "ENTER";
+        }
       }
     }
   }

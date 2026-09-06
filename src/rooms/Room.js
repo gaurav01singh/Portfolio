@@ -1,4 +1,4 @@
-import { Container, Graphics, Text } from "pixi.js";
+import { Container, Graphics, Text, Rectangle } from "pixi.js";
 import { Spring } from "../utils/Juice";
 
 export class Room extends Container {
@@ -82,7 +82,7 @@ export class Room extends Container {
     this.hudContainer.position.set(24, 20);
 
     const hudBg = new Graphics()
-      .roundRect(0, 0, 390, 52, 10)
+      .roundRect(0, 0, 480, 64, 12)
       .fill({ color: 0x090c16, alpha: 0.94 })
       .stroke({ width: 2, color: this.accentColor, alpha: 0.85 });
 
@@ -90,24 +90,24 @@ export class Room extends Container {
       text: this.roomTitle.toUpperCase(),
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 14.5,
+        fontSize: 17.5,
         fontWeight: "900",
         fill: 0xffffff,
         letterSpacing: 1.2,
       },
     });
-    titleTxt.position.set(20, 10);
+    titleTxt.position.set(20, 11);
 
     const hintTxt = new Text({
       text: "Click any object to inspect details",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 11.5,
+        fontSize: 13.5,
         fontWeight: "bold",
         fill: this.accentColor,
       },
     });
-    hintTxt.position.set(20, 30);
+    hintTxt.position.set(20, 36);
 
     this.hudContainer.addChild(hudBg, titleTxt, hintTxt);
     this.uiLayer.addChild(this.hudContainer);
@@ -115,14 +115,15 @@ export class Room extends Container {
 
   createExitControls() {
     this.exitBtn = new Container();
-    this.exitBtn.position.set(this.roomWidth - 150, 20);
+    this.exitBtn.position.set(this.roomWidth - 175, 20);
     this.exitBtn.eventMode = "static";
     this.exitBtn.cursor = "pointer";
+    this.exitBtn.hitArea = new Rectangle(0, 0, 155, 56);
 
     this.exitSpring = new Spring(1.0, 240, 14);
 
     const exitBg = new Graphics()
-      .roundRect(0, 0, 130, 50, 12)
+      .roundRect(0, 0, 155, 56, 12)
       .fill({ color: 0x1a1218, alpha: 0.94 })
       .stroke({ width: 2, color: 0xef4444, alpha: 0.9 });
 
@@ -130,14 +131,14 @@ export class Room extends Container {
       text: "EXIT [ESC]",
       style: {
         fontFamily: "system-ui, sans-serif",
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: "900",
         fill: 0xff8fa3,
         letterSpacing: 1,
       },
     });
     exitTxt.anchor.set(0.5);
-    exitTxt.position.set(65, 25);
+    exitTxt.position.set(77.5, 28);
 
     this.exitBtn.addChild(exitBg, exitTxt);
 
@@ -145,7 +146,7 @@ export class Room extends Container {
       this.exitSpring.target = 1.08;
       exitBg
         .clear()
-        .roundRect(0, 0, 130, 50, 12)
+        .roundRect(0, 0, 155, 56, 12)
         .fill(0xef4444)
         .stroke({ width: 2, color: 0xffffff });
       exitTxt.style.fill = 0xffffff;
@@ -155,7 +156,7 @@ export class Room extends Container {
       this.exitSpring.target = 1.0;
       exitBg
         .clear()
-        .roundRect(0, 0, 130, 50, 12)
+        .roundRect(0, 0, 155, 56, 12)
         .fill({ color: 0x1a1218, alpha: 0.94 })
         .stroke({ width: 2, color: 0xef4444, alpha: 0.9 });
       exitTxt.style.fill = 0xff8fa3;
@@ -165,9 +166,13 @@ export class Room extends Container {
       this.exitSpring.set(0.88);
     });
 
-    this.exitBtn.on("pointertap", () => {
+    const triggerExit = (e) => {
+      if (e?.stopPropagation) e.stopPropagation();
       this.close();
-    });
+    };
+
+    this.exitBtn.on("pointertap", triggerExit);
+    this.exitBtn.on("click", triggerExit);
 
     this.uiLayer.addChild(this.exitBtn);
   }
@@ -189,14 +194,14 @@ export class Room extends Container {
     }
 
     const badge = new Container();
-    const badgeY = options.badgeY ?? -28;
+    const badgeY = options.badgeY ?? -32;
     badge.position.set(options.badgeX ?? 0, badgeY);
 
     const bTxt = new Text({
       text: options.label ?? "INSPECT",
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 11.5,
+        fontSize: 14,
         fontWeight: "900",
         fill: options.color ?? this.accentColor,
         letterSpacing: 0.8,
@@ -204,11 +209,11 @@ export class Room extends Container {
     });
     bTxt.anchor.set(0.5);
 
-    const badgeW = Math.max(120, bTxt.width + 26);
-    const badgeH = 30;
+    const badgeW = Math.max(140, bTxt.width + 32);
+    const badgeH = 38;
 
     const badgeBg = new Graphics()
-      .roundRect(-badgeW / 2, -badgeH / 2, badgeW, badgeH, 8)
+      .roundRect(-badgeW / 2, -badgeH / 2, badgeW, badgeH, 10)
       .fill({ color: 0x090c16, alpha: 0.95 })
       .stroke({ width: 2, color: options.color ?? this.accentColor });
 
@@ -252,18 +257,18 @@ export class Room extends Container {
     }
 
     const insp = new Container();
-    const inspW = Math.min(this.roomWidth - 48, options.width ?? 560);
+    const inspW = Math.min(this.roomWidth - 60, options.width ?? 780);
 
     // Measure custom content height dynamically to ensure NO text ever overflows
     const content = new Container();
-    content.position.set(22, 66);
+    content.position.set(28, 76);
     if (options.content) {
       content.addChild(options.content);
     }
 
     // Dynamic height calculation — ALWAYS encloses the full content height with generous padding
-    const calculatedH = options.content ? content.height + 95 : 260;
-    const inspH = Math.max(300, options.height ?? calculatedH);
+    const calculatedH = options.content ? content.height + 110 : 300;
+    const inspH = Math.max(340, options.height ?? calculatedH);
 
     let posX = options.x ?? (this.roomWidth - inspW) / 2;
     let posY = options.y ?? 60;
@@ -306,9 +311,9 @@ export class Room extends Container {
     if (hasIcon) {
       const iconTxt = new Text({
         text: options.icon,
-        style: { fontSize: 24 },
+        style: { fontSize: 26 },
       });
-      iconTxt.position.set(20, 18);
+      iconTxt.position.set(24, 20);
       insp.addChild(iconTxt);
     }
 
@@ -316,28 +321,28 @@ export class Room extends Container {
       text: options.title ?? "Inspection Dossier",
       style: {
         fontFamily: "system-ui, -apple-system, sans-serif",
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: "900",
         fill: 0xffffff,
       },
     });
-    titleTxt.position.set(hasIcon ? 58 : 22, 18);
+    titleTxt.position.set(hasIcon ? 64 : 26, 20);
     insp.addChild(titleTxt);
 
     // Close '✕' button
     const closeBtn = new Container();
-    closeBtn.position.set(inspW - 32, 28);
+    closeBtn.position.set(inspW - 36, 32);
     closeBtn.eventMode = "static";
     closeBtn.cursor = "pointer";
 
     const cBg = new Graphics()
-      .circle(0, 0, 16)
+      .circle(0, 0, 19)
       .fill(0x1a2336)
       .stroke({ width: 1.5, color: 0x475569 });
 
     const cTxt = new Text({
       text: "✕",
-      style: { fontSize: 13, fontWeight: "bold", fill: 0xffffff },
+      style: { fontSize: 16, fontWeight: "bold", fill: 0xffffff },
     });
     cTxt.anchor.set(0.5);
 
@@ -368,6 +373,10 @@ export class Room extends Container {
       this.activeInspector = null;
       this.activeInspectorSpring = null;
     }
+  }
+
+  close() {
+    this.requestClose();
   }
 
   requestClose() {

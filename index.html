@@ -26,6 +26,88 @@
   </head>
 
   <body>
+    <!-- Rotate Device Prompt (Mobile Portrait Experience Guidance) -->
+    <div
+      id="rotate-device-overlay"
+      class="rotate-device-overlay"
+      aria-live="polite"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="rotate-device-backdrop"></div>
+      <div class="rotate-device-card">
+        <!-- Technical Corner Accents -->
+        <div class="rotate-corner corner-tl"></div>
+        <div class="rotate-corner corner-tr"></div>
+        <div class="rotate-corner corner-bl"></div>
+        <div class="rotate-corner corner-br"></div>
+
+        <!-- Animated Rotating Phone Graphic -->
+        <div class="rotate-animation-container">
+          <div class="rotate-phone-halo"></div>
+          <div class="rotate-phone-device">
+            <div class="phone-speaker"></div>
+            <div class="phone-screen-content">
+              <span class="screen-ratio-tag">16 : 9</span>
+              <div class="screen-wave-lines">
+                <span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+          <svg
+            class="rotate-arc-indicator"
+            viewBox="0 0 100 100"
+            fill="none"
+          >
+            <path
+              d="M 22 28 A 36 36 0 0 1 78 28"
+              stroke="rgba(56, 189, 248, 0.4)"
+              stroke-width="2.5"
+              stroke-dasharray="4 4"
+            />
+            <path
+              d="M 72 20 L 80 28 L 72 36"
+              stroke="var(--accent-cyan)"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+
+        <!-- Text Guidance -->
+        <div class="rotate-text-block">
+          <div class="rotate-sys-badge">
+            <span class="rotate-pulse-dot"></span>
+            <span>DISPLAY OPTIMIZATION</span>
+          </div>
+          <h2 class="rotate-prompt-title">ROTATE YOUR DEVICE</h2>
+          <p class="rotate-prompt-desc">
+            This interactive 3D world is optimized for landscape mode. Rotate your phone horizontally for full controls, visuals, and gameplay.
+          </p>
+        </div>
+
+        <!-- Dismiss / Bypass Option -->
+        <button
+          id="rotate-dismiss-btn"
+          class="rotate-dismiss-btn"
+          type="button"
+        >
+          <span>CONTINUE IN PORTRAIT</span>
+          <svg
+            viewBox="0 0 24 24"
+            width="14"
+            height="14"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
     <!-- Cinematic Game Preloader & Title Screen Overlay -->
     <div id="loading-screen" class="loading-screen">
       <!-- Overhead Directional Light Sheen -->

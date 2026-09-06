@@ -32,7 +32,7 @@ export class ProjectModal {
     modal.innerHTML = `
       <div class="project-modal-container" id="project-modal-container">
         <!-- Close Button -->
-        <button class="project-modal-close-btn" id="modal-close-btn" aria-label="Close project modal">
+        <button type="button" class="project-modal-close-btn" id="modal-close-btn" aria-label="Close project modal">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -132,7 +132,17 @@ export class ProjectModal {
 
     // Attach DOM event handlers
     const closeBtn = modal.querySelector("#modal-close-btn");
-    closeBtn.addEventListener("click", () => this.close());
+    if (closeBtn) {
+      closeBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        this.close();
+      });
+      closeBtn.addEventListener("touchend", (e) => {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        this.close();
+      });
+    }
 
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
@@ -202,8 +212,8 @@ export class ProjectModal {
       liveLink.querySelector("span").textContent = project.link.includes(
         "drive.google.com",
       )
-        ? "DOWNLOAD BUILD / GAME DEMO"
-        : "LAUNCH PROJECT / LIVE DEMO";
+        ? "DOWNLOAD"
+        : "View";
     } else {
       liveLink.style.display = "none";
     }
